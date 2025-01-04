@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Handmade.otf",
+      "sha1": "56a4d0152ed396560c6a318cd93fccd6cd6ba367"
+    },
+    {
+      "path": "assets/fonts/font.ttf",
+      "sha1": "a4c6097b6742ffa5664955a516ab701e6fc72b43"
+    }
+  ]
+}
