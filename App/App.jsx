@@ -84,15 +84,17 @@ function App() {
       <GradientBackground>
         <NavigationContainer>
           <Tab.Navigator
-            initialRouteName="Achievements-Screen"
+            theme={{colors: {secondaryContainer: 'transparent'}}}
+            initialRouteName="Home-Screen"
             activeColor="#e91e63"
             inactiveColor="#ffffff"
-            shifting={false} // Add this line to disable background color change
+            // labeled={false} // this will hide labels
+            // shifting={true} // this will show labels when tab is active
             barStyle={{backgroundColor: '#3a3839'}}>
             <Tab.Screen
-              name="Home Screen"
+              name="Home-Screen"
               options={{
-                tabBarLabel: 'Home Screen',
+                tabBarLabel: 'Home',
                 tabBarIcon: ({color}) => (
                   <MaterialCommunityIcons name="home" color={color} size={26} />
                 ),
@@ -104,7 +106,7 @@ function App() {
               name="Achievements-Screen"
               component={CreateProject}
               options={{
-                tabBarLabel: 'Achievements-Screen',
+                tabBarLabel: 'Achievements',
                 tabBarIcon: ({color}) => (
                   <MaterialCommunityIcons
                     name="trophy"
@@ -116,9 +118,9 @@ function App() {
             />
 
             <Tab.Screen
-              name="Events Screen"
+              name="Events-Screen"
               options={{
-                tabBarLabel: 'Events Screen',
+                tabBarLabel: 'Events',
                 tabBarIcon: ({color}) => (
                   <MaterialCommunityIcons
                     name="calendar"
