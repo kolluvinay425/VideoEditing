@@ -1,0 +1,41 @@
+const images = {
+  achievement: require('../../assets/icons/AchievementSkeliton.png'),
+  pointsIcon: require('../../assets/icons/points.png'),
+  sharpshooter: require('../../assets/icons/deadeye.png'),
+  guns: {
+    ar: {
+      akm: require('../../assets/images/guns/ar/akm.png'),
+      // m416: require('../../assets/Images/guns/ar/m416.png'),
+      // scarl: require('../../assets/Images/guns/ar/scarl.png'),
+      // aug: require('../../assets/Images/guns/ar/aug.png'),
+      // groza: require('../../assets/Images/guns/ar/groza.png'),
+      // beryl: require('../../assets/Images/guns/ar/beryl.png'),
+      // mk47: require('../../assets/Images/guns/ar/mk47.png'),
+      // g36c: require('../../assets/Images/guns/ar/g36c.png'),
+      // m762: require('../../assets/Images/guns/ar/m762.png'),
+      // qbz: require('../../assets/Images/guns/ar/qbz.png'),
+      // ace32: require('../../assets/Images/guns/ar/ace32.png'),
+      // m16a4: require('../../assets/Images/guns/ar/m16a4.png'),
+      // honeyBadger: require('../../assets/Images/guns/ar/honey-badger.png'),
+      // famas: require('../../assets/Images/guns/ar/famas.png'),
+      all: [
+        require('../../assets/icons/akm.png'),
+        require('../../assets/icons/m416.png'),
+        require('../../assets/icons/scarl.png'),
+        require('../../assets/icons/aug.png'),
+        require('../../assets/icons/groza.png'),
+        // require('../../assets/icons/beryl.png'),
+        require('../../assets/icons/mk47.png'),
+        require('../../assets/icons/g36c.png'),
+        require('../../assets/icons/m762.png'),
+        require('../../assets/icons/qbz.png'),
+        require('../../assets/icons/ace32.png'),
+        require('../../assets/icons/m16a4.png'),
+        require('../../assets/icons/honey-badger.png'),
+        require('../../assets/icons/famas.png'),
+      ],
+    },
+  },
+};
+
+export default images;
