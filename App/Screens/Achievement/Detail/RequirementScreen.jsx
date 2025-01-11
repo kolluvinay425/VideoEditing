@@ -8,9 +8,7 @@ import {
   Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import GradientBackground from '../../Components/GradientBackground';
-import images from '../../themes/Images';
-
+import images from '../../../themes/Images';
 const RequirementItem = ({title, logo, icon, children}) => {
   const [expanded, setExpanded] = useState(false);
 

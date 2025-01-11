@@ -2,6 +2,9 @@ const images = {
   achievement: require('../../assets/icons/AchievementSkeliton.png'),
   pointsIcon: require('../../assets/icons/points.png'),
   sharpshooter: require('../../assets/icons/deadeye.png'),
+  headShot: require('../../assets/icons/headshot.png'),
+  distance: require('../../assets/icons/distance.png'),
+  platinumTier: require('../../assets/icons/platinumTier.png'),
   guns: {
     ar: {
       akm: require('../../assets/images/guns/ar/akm.png'),

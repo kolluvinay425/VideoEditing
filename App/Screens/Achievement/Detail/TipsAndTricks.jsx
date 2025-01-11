@@ -1,7 +1,6 @@
 import React from 'react';
 import {ScrollView, View, Text, Image, StyleSheet} from 'react-native';
-import images from '../../themes/Images';
-import GradientBackground from '../../Components/GradientBackground';
+import GradientBackground from '../../../Components/GradientBackground';
 
 const TipsScreen = () => (
   <GradientBackground>
