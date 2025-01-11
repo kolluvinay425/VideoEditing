@@ -12,9 +12,7 @@ import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import SearchBar from '../../Components/SearchBar';
 import {useNavigation} from '@react-navigation/native';
 import GradientBackground from '../../Components/GradientBackground';
-
-const icon = require('../../assets/icons/Frame4.png');
-const iconA = require('../../assets/icons/points.png');
+import images from '../../themes/Images';
 
 const {width} = Dimensions.get('window');
 
@@ -142,7 +140,7 @@ const Achievements = () => {
           onPress={() => navigation.navigate('ItemDetails', {item})}
           style={styles.itemContainer}>
           <Image
-            source={icon}
+            source={images.achievement}
             style={{
               width: 60,
               height: 50,
@@ -150,7 +148,7 @@ const Achievements = () => {
           />
           <Text style={styles.itemText}>{item}</Text>
           <View style={styles.inlineContainer}>
-            <Image source={iconA} style={styles.inlineImage} />
+            <Image source={images.pointsIcon} style={styles.inlineImage} />
             <Text style={styles.itemText}>60</Text>
           </View>
         </TouchableOpacity>

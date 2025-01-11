@@ -8,11 +8,11 @@ import {
   ScrollView,
 } from 'react-native';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
-import Guns from '../../../Components/Guns';
 import GradientBackground from '../../../Components/GradientBackground';
 import images from '../../../themes/Images';
 const {width} = Dimensions.get('window');
 import Requirement from './RequirementScreen';
+import TipsScreen from './TipsAndTricks';
 const ItemDetails = ({route}) => {
   const {item} = route.params;
   const [index, setIndex] = useState(0);
