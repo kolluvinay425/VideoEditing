@@ -68,7 +68,7 @@ function HomeScreen() {
   );
 }
 
-function EventsScreen() {
+function TrackerScreen() {
   return (
     <GradientBackground>
       <View style={styles.container}>
@@ -120,16 +120,16 @@ function App() {
             <Tab.Screen
               name="Events-Screen"
               options={{
-                tabBarLabel: 'Events',
+                tabBarLabel: 'Tracker',
                 tabBarIcon: ({color}) => (
                   <MaterialCommunityIcons
-                    name="calendar"
+                    name="location-enter"
                     color={color}
                     size={26}
                   />
                 ),
               }}>
-              {() => <EventsScreen />}
+              {() => <TrackerScreen />}
             </Tab.Screen>
           </Tab.Navigator>
         </NavigationContainer>
