@@ -16,6 +16,7 @@ import TipsScreen from './TipsAndTricks';
 
 const ItemDetails = ({route}) => {
   const {item} = route.params;
+  console.log('aaaaa----------->', item);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'info', title: 'Info'},
@@ -47,12 +48,12 @@ const ItemDetails = ({route}) => {
                 style={styles.inlineImageSmall}
               />
             </View>
-            {item.title && (
+            {item.rewards.title && (
               <View style={styles.inlineContainer}>
-                <Text style={styles.text2}>Title:</Text>
+                <Text style={styles.text2}>Title</Text>
                 <Image
-                  source={{uri: item.titleImage}}
-                  style={styles.inlineImageLarge}
+                  source={{uri: item.rewards.titleImage}}
+                  style={{width: 100, height: 100, resizeMode: 'contain'}}
                 />
               </View>
             )}
