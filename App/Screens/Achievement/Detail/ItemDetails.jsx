@@ -123,9 +123,9 @@ const styles = StyleSheet.create({
   },
   inlineImageLarge: {
     width: 100,
-    height: 50,
-    resizeMode: 'contain',
-    marginLeft: 5,
+    height: 60,
+    // resizeMode: 'contain',
+    // marginLeft: 5,
   },
   tabBar: {
     backgroundColor: '#302D2D',
