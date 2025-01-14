@@ -53,7 +53,7 @@ const ItemDetails = ({route}) => {
                 <Text style={styles.text2}>Title</Text>
                 <Image
                   source={{uri: item.rewards.titleImage}}
-                  style={{width: 100, height: 100, resizeMode: 'contain'}}
+                  style={styles.inlineImageLarge}
                 />
               </View>
             )}
