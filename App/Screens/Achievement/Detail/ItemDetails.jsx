@@ -13,19 +13,18 @@ import images from '../../../themes/Images';
 const {width} = Dimensions.get('window');
 import Requirement from './RequirementScreen';
 import TipsScreen from './TipsAndTricks';
+
 const ItemDetails = ({route}) => {
   const {item} = route.params;
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'info', title: 'Info'},
-    // {key: 'weapons', title: 'Weapons'},
     {key: 'tips', title: 'Tips'},
   ]);
 
   const renderScene = SceneMap({
-    info: Requirement,
-    // weapons: WeaponsScreen,
-    tips: TipsScreen,
+    info: () => <Requirement item={item} />,
+    tips: () => <TipsScreen item={item} />,
   });
 
   return (
@@ -33,29 +32,30 @@ const ItemDetails = ({route}) => {
       <GradientBackground>
         <View style={styles.headerContainer}>
           <View style={styles.header1}>
-            <Image
-              source={images.achievement}
-              style={styles.achievementImage}
-            />
-            <Text style={styles.text1}>sharpshooter</Text>
+            <Image source={{uri: item.image}} style={styles.achievementImage} />
+            <Text style={styles.text1}>{item.name}</Text>
           </View>
 
           <View style={styles.header2}>
-            <Text style={styles.text2}>Hardness: Medium</Text>
+            <Text style={styles.text2}>Hardness: {item.hardness}</Text>
             <View style={styles.inlineContainer}>
-              <Text style={styles.text2}>Achievement points: 60</Text>
+              <Text style={styles.text2}>
+                Achievement points: {item.points}
+              </Text>
               <Image
                 source={images.pointsIcon}
                 style={styles.inlineImageSmall}
               />
             </View>
-            <View style={styles.inlineContainer}>
-              <Text style={styles.text2}>Title:</Text>
-              <Image
-                source={images.sharpshooter}
-                style={styles.inlineImageLarge}
-              />
-            </View>
+            {item.title && (
+              <View style={styles.inlineContainer}>
+                <Text style={styles.text2}>Title:</Text>
+                <Image
+                  source={{uri: item.titleImage}}
+                  style={styles.inlineImageLarge}
+                />
+              </View>
+            )}
           </View>
         </View>
 
@@ -76,7 +76,6 @@ const ItemDetails = ({route}) => {
             />
           )}
         />
-        {/* <Guns /> */}
       </GradientBackground>
     </>
   );
@@ -127,13 +126,6 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     marginLeft: 5,
   },
-  backgroundImage: {
-    flex: 1,
-  },
-  gradient: {
-    flex: 1,
-    padding: 10,
-  },
   tabBar: {
     backgroundColor: '#302D2D',
   },
@@ -147,17 +139,6 @@ const styles = StyleSheet.create({
   tabStyle: {
     width: 'auto',
     paddingHorizontal: 10,
-  },
-  tabContent: {
-    flex: 1,
-    // justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  tabText: {
-    color: 'white',
-    fontSize: 18,
-    marginBottom: 20,
   },
 });
 

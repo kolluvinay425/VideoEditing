@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import SearchBar from '../../Components/SearchBar';
@@ -28,134 +29,64 @@ const Achievements = () => {
     {key: 'social', title: 'Social'},
     {key: 'general', title: 'General'},
   ]);
-
-  const items = {
-    all: [
-      'Overachiever',
-      'Chicken master',
-      'On a Mission',
-      'Weapon Master',
-      'Pacifist',
-      'Well Liked',
-      'Unique Destiny',
-      'Commando',
-      'Dead Eye',
-      'Overachiever',
-      'Chicken master',
-      'On a Mission',
-      'Weapon Master',
-      'Pacifist',
-      'Well Liked',
-      'Unique Destiny',
-      'Commando',
-      'Dead Eye',
-    ],
-    glorious_moments: [
-      'Item 1',
-      'Item 2',
-      'Item 3',
-      'Item 4',
-      'Item 5',
-      'Item 6',
-      'Item 7',
-      'Item 8',
-      'Item 9',
-    ],
-    matches: [
-      'Item 1',
-      'Item 2',
-      'Item 3',
-      'Item 4',
-      'Item 5',
-      'Item 6',
-      'Item 7',
-      'Item 8',
-      'Item 9',
-    ],
-    honor: [
-      'Item 1',
-      'Item 2',
-      'Item 3',
-      'Item 4',
-      'Item 5',
-      'Item 6',
-      'Item 7',
-      'Item 8',
-      'Item 9',
-    ],
-    progress: [
-      'Item 1',
-      'Item 2',
-      'Item 3',
-      'Item 4',
-      'Item 5',
-      'Item 6',
-      'Item 7',
-      'Item 8',
-      'Item 9',
-    ],
-    items: [
-      'Item 1',
-      'Item 2',
-      'Item 3',
-      'Item 4',
-      'Item 5',
-      'Item 6',
-      'Item 7',
-      'Item 8',
-      'Item 9',
-    ],
-    social: [
-      'Item 1',
-      'Item 2',
-      'Item 3',
-      'Item 4',
-      'Item 5',
-      'Item 6',
-      'Item 7',
-      'Item 8',
-      'Item 9',
-    ],
-    general: [
-      'Item 1',
-      'Item 2',
-      'Item 3',
-      'Item 4',
-      'Item 5',
-      'Item 6',
-      'Item 7',
-      'Item 8',
-      'Item 9',
-    ],
-  };
-
+  const [achievements, setAchievements] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
-  const renderScene = ({route}) => (
-    <FlatList
-      data={items[route.key]}
-      keyExtractor={(item, index) => `${route.key}-${index}`}
-      renderItem={({item}) => (
-        <TouchableOpacity
-          onPress={() => navigation.navigate('ItemDetails', {item})}
-          style={styles.itemContainer}>
-          <Image
-            source={images.achievement}
-            style={{
-              width: 60,
-              height: 50,
-            }}
-          />
-          <Text style={styles.itemText}>{item}</Text>
-          <View style={styles.inlineContainer}>
-            <Image source={images.pointsIcon} style={styles.inlineImage} />
-            <Text style={styles.itemText}>60</Text>
-          </View>
-        </TouchableOpacity>
-      )}
-      numColumns={3}
-    />
-  );
+  useEffect(() => {
+    const fetchAchievements = async () => {
+      try {
+        const response = await fetch(
+          'http://localhost:3001/api/achievements/all',
+        );
+        const data = await response.json();
+        setAchievements(data);
+      } catch (error) {
+        console.error('Error fetching achievements:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAchievements();
+  }, []);
+
+  const renderScene = ({route}) => {
+    if (loading) {
+      return <ActivityIndicator size="large" color="#0000ff" />;
+    }
+
+    const filteredAchievements =
+      route.key === 'all'
+        ? achievements
+        : achievements.filter(ach => ach.category === route.key);
+
+    return (
+      <FlatList
+        data={filteredAchievements}
+        keyExtractor={(item, index) => `${route.key}-${index}`}
+        renderItem={({item}) => (
+          <TouchableOpacity
+            onPress={() => navigation.navigate('ItemDetails', {item})}
+            style={styles.itemContainer}>
+            <Image
+              source={{uri: item.image}}
+              style={{
+                width: 60,
+                height: 50,
+              }}
+            />
+            <Text style={styles.itemText}>{item.name}</Text>
+            <View style={styles.inlineContainer}>
+              <Image source={images.pointsIcon} style={styles.inlineImage} />
+              <Text style={styles.itemText}>{item.points}</Text>
+            </View>
+          </TouchableOpacity>
+        )}
+        numColumns={3}
+      />
+    );
+  };
 
   const sceneMap = {};
   routes.forEach(route => {
@@ -178,9 +109,9 @@ const Achievements = () => {
               indicatorStyle={styles.indicator}
               style={styles.tabBar}
               labelStyle={styles.label}
-              tabStyle={styles.tabStyle} // Added tabStyle to control spacing
-              activeColor="#ffffff" // Active tab text color (blue)
-              inactiveColor="#f0e9e9" // Inactive tab text color (black)
+              tabStyle={styles.tabStyle}
+              activeColor="#ffffff"
+              inactiveColor="#f0e9e9"
             />
           )}
         />
@@ -190,7 +121,6 @@ const Achievements = () => {
 };
 
 const styles = StyleSheet.create({
-  backgroundImage: {flex: 1},
   tabBar: {
     backgroundColor: '#363434',
   },
@@ -202,8 +132,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   tabStyle: {
-    width: 'auto', // Adjust tab width to auto
-    paddingHorizontal: 10, // Adjust padding to control spacing
+    width: 'auto',
+    paddingHorizontal: 10,
   },
   itemContainer: {
     flex: 0.7,
@@ -213,19 +143,14 @@ const styles = StyleSheet.create({
     borderColor: '#b09d21',
     padding: 10,
     margin: 10,
-    // backgroundColor: 'transparent',
-    // borderRadius: 5,
-
     aspectRatio: 1,
     backgroundColor: '#3c3939',
     overflow: 'hidden',
-    padding: 5,
     borderRadius: 5,
-    position: 'relative', // Add shadow for iOS
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
-    shadowRadius: 2, // Add elevation for Android
+    shadowRadius: 2,
     elevation: 5,
   },
   itemText: {
@@ -233,7 +158,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#d5cece',
     fontWeight: 'bold',
-    fontFamily: 'italic',
   },
   inlineContainer: {
     flexDirection: 'row',

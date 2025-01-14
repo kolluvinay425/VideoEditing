@@ -8,7 +8,7 @@ import {
   Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import images from '../../../themes/Images';
+
 const RequirementItem = ({title, logo, icon, children}) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -26,7 +26,7 @@ const RequirementItem = ({title, logo, icon, children}) => {
         {logo && (
           <Image
             style={{width: 70, height: 60, marginLeft: 10}}
-            source={logo}
+            source={{uri: logo}}
           />
         )}
         {icon && (
@@ -44,18 +44,16 @@ const RequirementItem = ({title, logo, icon, children}) => {
   );
 };
 
-const RequirementScreen = () => {
+const RequirementScreen = ({item}) => {
   const handleComplete = () => {
     alert('Marked as Complete!');
   };
+
   return (
     <ScrollView
-      style={styles.ScrollContainer}
+      style={styles.scrollContainer}
       contentContainerStyle={styles.contentContainerStyle}>
-      <Text style={styles.descriptionText}>
-        Without missing a single shot, eliminate 3 enemies 50 meters away in a
-        row by headshot, while in a Solo Classic match in Platinum tier or above
-      </Text>
+      <Text style={styles.descriptionText}>{item.description}</Text>
 
       <View style={styles.container}>
         <Text style={styles.descriptionText}></Text>
@@ -63,43 +61,17 @@ const RequirementScreen = () => {
 
       <Text style={styles.heading}>Requirements</Text>
       <View style={styles.container}>
-        <RequirementItem title="Solo Classic Match" icon={'person'}>
-          <Text style={styles.descriptionText}>
-            Ensure that you are participating in a Solo Classic match. This
-            challenge cannot be completed in Duo or Squad modes.
-          </Text>
-        </RequirementItem>
-        <RequirementItem
-          title="Platinum Tier Or higher"
-          logo={images.platinumTier}>
-          <Text style={styles.descriptionText}>
-            You must be ranked at Platinum tier or higher. This ensures that you
-            are playing against tougher opponents, making the achievement more
-            challenging and rewarding.
-          </Text>
-        </RequirementItem>
-        <RequirementItem title="HeadShot Kills" logo={images.headShot}>
-          <Text style={styles.descriptionText}>
-            Use a sniper rifle to secure three headshot kills. Precision is key
-            here, as only headshots will count towards this requirement.
-          </Text>
-        </RequirementItem>
-        <RequirementItem
-          title="Consecutive Kills"
-          icon={'format-list-numbered'}>
-          <Text style={styles.descriptionText}>
-            The three headshot kills must be consecutive. This means you cannot
-            miss any shots between these kills; maintain your accuracy and
-            composure to complete this part of the challenge.
-          </Text>
-        </RequirementItem>
-        <RequirementItem title="Minimum Distance" logo={images.distance}>
-          <Text style={styles.descriptionText}>
-            Each of the headshot kills must be made from a distance of at least
-            50 meters. This adds an extra layer of difficulty, requiring you to
-            engage enemies from a longer range.
-          </Text>
-        </RequirementItem>
+        {item.requirements.map((requirement, index) => (
+          <RequirementItem
+            key={index}
+            title={requirement.heading}
+            logo={requirement.image}
+            icon={requirement.icon_image}>
+            <Text style={styles.descriptionText}>
+              {requirement.description}
+            </Text>
+          </RequirementItem>
+        ))}
 
         <TouchableOpacity style={styles.button} onPress={handleComplete}>
           <Text style={styles.buttonText}>Mark as Complete</Text>
@@ -117,7 +89,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginTop: 30,
     width: '70%',
-    alignSelf: 'center', // Center the button
+    alignSelf: 'center',
   },
   buttonText: {
     color: '#fff',
@@ -130,12 +102,12 @@ const styles = StyleSheet.create({
     color: '#fff',
     paddingBottom: 30,
   },
-  ScrollContainer: {
+  scrollContainer: {
     flex: 1,
     padding: 20,
   },
   contentContainerStyle: {
-    paddingBottom: 50, // Add extra padding to ensure the button is visible
+    paddingBottom: 50,
   },
   container: {},
   descriptionText: {
