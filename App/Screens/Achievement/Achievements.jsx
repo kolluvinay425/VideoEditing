@@ -70,13 +70,13 @@ const Achievements = () => {
             onPress={() => navigation.navigate('ItemDetails', {item})}
             style={styles.itemContainer}>
             <Image
-              source={{uri: item.image}}
+              source={images.achievement}
               style={{
                 width: 60,
                 height: 50,
               }}
             />
-            <Text style={styles.itemText}>{item.name}</Text>
+            <Text style={styles.itemText}>{item.name.en}</Text>
             <View style={styles.inlineContainer}>
               <Image source={images.pointsIcon} style={styles.inlineImage} />
               <Text style={styles.itemText}>{item.points}</Text>

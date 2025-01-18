@@ -53,7 +53,7 @@ const RequirementScreen = ({item}) => {
     <ScrollView
       style={styles.scrollContainer}
       contentContainerStyle={styles.contentContainerStyle}>
-      <Text style={styles.descriptionText}>{item.description}</Text>
+      <Text style={styles.descriptionText}>{item.description.en}</Text>
 
       <View style={styles.container}>
         <Text style={styles.descriptionText}></Text>
@@ -64,11 +64,11 @@ const RequirementScreen = ({item}) => {
         {item.requirements.map((requirement, index) => (
           <RequirementItem
             key={index}
-            title={requirement.heading}
+            title={requirement.heading.en}
             logo={requirement.image}
             icon={requirement.icon_image}>
             <Text style={styles.descriptionText}>
-              {requirement.description}
+              {requirement.description.en}
             </Text>
           </RequirementItem>
         ))}

@@ -16,7 +16,6 @@ import TipsScreen from './TipsAndTricks';
 
 const ItemDetails = ({route}) => {
   const {item} = route.params;
-  console.log('aaaaa----------->', item);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'info', title: 'Info'},
@@ -33,12 +32,15 @@ const ItemDetails = ({route}) => {
       <GradientBackground>
         <View style={styles.headerContainer}>
           <View style={styles.header1}>
-            <Image source={{uri: item.image}} style={styles.achievementImage} />
-            <Text style={styles.text1}>{item.name}</Text>
+            <Image
+              source={images.achievement}
+              style={styles.achievementImage}
+            />
+            <Text style={styles.text1}>{item.name.en}</Text>
           </View>
 
           <View style={styles.header2}>
-            <Text style={styles.text2}>Hardness: {item.hardness}</Text>
+            <Text style={styles.text2}>Hardness: {item.hardness.en}</Text>
             <View style={styles.inlineContainer}>
               <Text style={styles.text2}>
                 Achievement points: {item.points}

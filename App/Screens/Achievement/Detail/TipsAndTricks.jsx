@@ -8,11 +8,11 @@ const TipsScreen = ({item}) => (
       <View style={styles.tabContent}>
         {item.tipsTricks.map((tip, index) => (
           <View key={index} style={styles.tipContainer}>
-            <Text style={styles.heading}>{tip.heading}</Text>
+            <Text style={styles.heading}>{tip.heading.en}</Text>
             {tip.image && (
               <Image source={{uri: tip.image}} style={styles.image} />
             )}
-            <Text style={styles.tabText}>{tip.description}</Text>
+            <Text style={styles.tabText}>{tip.description.en}</Text>
           </View>
         ))}
       </View>
