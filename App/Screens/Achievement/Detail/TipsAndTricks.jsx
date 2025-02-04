@@ -1,18 +1,26 @@
 import React from 'react';
 import {ScrollView, View, Text, Image, StyleSheet} from 'react-native';
 import GradientBackground from '../../../Components/GradientBackground';
-
-const TipsScreen = ({item}) => (
+import FastImage from 'react-native-fast-image';
+const TipsScreen = ({item, language}) => (
   <GradientBackground>
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.tabContent}>
         {item.tipsTricks.map((tip, index) => (
           <View key={index} style={styles.tipContainer}>
-            <Text style={styles.heading}>{tip.heading.en}</Text>
+            <Text style={styles.heading}>{tip.heading[language]}</Text>
             {tip.image && (
-              <Image source={{uri: tip.image}} style={styles.image} />
+              // <Image source={{uri: tip.image}} style={styles.image} />
+              <FastImage
+                style={styles.image}
+                source={{
+                  uri: tip.image,
+                  priority: FastImage.priority.normal,
+                }}
+                resizeMode={FastImage.resizeMode.cover}
+              />
             )}
-            <Text style={styles.tabText}>{tip.description.en}</Text>
+            <Text style={styles.tabText}>{tip.description[language]}</Text>
           </View>
         ))}
       </View>

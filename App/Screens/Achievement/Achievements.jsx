@@ -8,12 +8,14 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import SearchBar from '../../Components/SearchBar';
 import {useNavigation} from '@react-navigation/native';
 import GradientBackground from '../../Components/GradientBackground';
 import images from '../../themes/Images';
+import FastImage from 'react-native-fast-image';
 
 const {width} = Dimensions.get('window');
 
@@ -31,6 +33,8 @@ const Achievements = () => {
   ]);
   const [achievements, setAchievements] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [language, setLanguage] = useState('en'); // Default language is English
+  const [loadingLanguage, setLoadingLanguage] = useState(false); // New state to handle language change loading
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -40,7 +44,8 @@ const Achievements = () => {
           'http://localhost:3001/api/achievements/all',
         );
         const data = await response.json();
-        setAchievements(data);
+        setAchievements(data.achievements);
+        console.log('----------------------------->', data.achievements[0]);
       } catch (error) {
         console.error('Error fetching achievements:', error);
       } finally {
@@ -52,8 +57,15 @@ const Achievements = () => {
   }, []);
 
   const renderScene = ({route}) => {
-    if (loading) {
-      return <ActivityIndicator size="large" color="#0000ff" />;
+    if (loading || loadingLanguage) {
+      // Show loading when achievements or language is loading
+      return (
+        <ActivityIndicator
+          style={{padding: 100}}
+          size="large"
+          color="#e91e63"
+        />
+      );
     }
 
     const filteredAchievements =
@@ -67,18 +79,21 @@ const Achievements = () => {
         keyExtractor={(item, index) => `${route.key}-${index}`}
         renderItem={({item}) => (
           <TouchableOpacity
-            onPress={() => navigation.navigate('ItemDetails', {item})}
+            onPress={() => navigation.navigate('ItemDetails', {item, language})}
             style={styles.itemContainer}>
-            <Image
+            <FastImage
               source={images.achievement}
               style={{
                 width: 60,
                 height: 50,
               }}
             />
-            <Text style={styles.itemText}>{item.name.en}</Text>
+            <Text style={styles.itemText}>{item.name[language]}</Text>
             <View style={styles.inlineContainer}>
-              <Image source={images.pointsIcon} style={styles.inlineImage} />
+              <FastImage
+                source={images.pointsIcon}
+                style={styles.inlineImage}
+              />
               <Text style={styles.itemText}>{item.points}</Text>
             </View>
           </TouchableOpacity>
@@ -93,10 +108,56 @@ const Achievements = () => {
     sceneMap[route.key] = renderScene;
   });
 
+  const languages = [
+    'en',
+    'zh',
+    'ko',
+    'ja',
+    'es',
+    'ru',
+    'fr',
+    'de',
+    'pt',
+    'ar',
+  ];
+
+  const handleLanguageChange = lang => {
+    setLoadingLanguage(true); // Start loading effect
+    setLanguage(lang); // Set new language
+    setTimeout(() => {
+      setLoadingLanguage(false); // End loading effect after 1 second (or adjust time as needed)
+    }, 1000);
+  };
+
   return (
     <>
       <SearchBar />
       <GradientBackground>
+        <ScrollView
+          style={{flexGrow: 0}}
+          horizontal
+          showsHorizontalScrollIndicator={false}>
+          <View style={styles.languageSwitcher}>
+            {languages.map(lang => (
+              <TouchableOpacity
+                key={lang}
+                onPress={() => handleLanguageChange(lang)} // Use the new handleLanguageChange function
+                style={[
+                  styles.languageButton,
+                  language === lang && styles.selectedLanguageButton,
+                ]}>
+                <Text
+                  style={[
+                    styles.languageText,
+                    language === lang && styles.selectedLanguageText,
+                  ]}>
+                  {lang.toUpperCase()}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+
         <TabView
           navigationState={{index, routes}}
           renderScene={SceneMap(sceneMap)}
@@ -121,6 +182,31 @@ const Achievements = () => {
 };
 
 const styles = StyleSheet.create({
+  languageSwitcher: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    height: 50,
+  },
+  languageButton: {
+    marginHorizontal: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+  },
+  selectedLanguageButton: {
+    backgroundColor: '#e91e63',
+    borderColor: '#e91e63',
+  },
+  languageText: {
+    fontSize: 14,
+    color: '#f3efef',
+  },
+  selectedLanguageText: {
+    color: '#fff',
+  },
   tabBar: {
     backgroundColor: '#363434',
   },

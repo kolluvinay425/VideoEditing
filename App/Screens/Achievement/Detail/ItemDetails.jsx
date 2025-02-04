@@ -13,9 +13,10 @@ import images from '../../../themes/Images';
 const {width} = Dimensions.get('window');
 import Requirement from './RequirementScreen';
 import TipsScreen from './TipsAndTricks';
+import FastImage from 'react-native-fast-image';
 
 const ItemDetails = ({route}) => {
-  const {item} = route.params;
+  const {item, language} = route.params;
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'info', title: 'Info'},
@@ -23,8 +24,8 @@ const ItemDetails = ({route}) => {
   ]);
 
   const renderScene = SceneMap({
-    info: () => <Requirement item={item} />,
-    tips: () => <TipsScreen item={item} />,
+    info: () => <Requirement language={language} item={item} />,
+    tips: () => <TipsScreen language={language} item={item} />,
   });
 
   return (
@@ -32,15 +33,17 @@ const ItemDetails = ({route}) => {
       <GradientBackground>
         <View style={styles.headerContainer}>
           <View style={styles.header1}>
-            <Image
+            <FastImage
               source={images.achievement}
               style={styles.achievementImage}
             />
-            <Text style={styles.text1}>{item.name.en}</Text>
+            <Text style={styles.text1}>{item.name[language]}</Text>
           </View>
 
           <View style={styles.header2}>
-            <Text style={styles.text2}>Hardness: {item.hardness.en}</Text>
+            <Text style={styles.text2}>
+              Hardness: {item.hardness[language]}
+            </Text>
             <View style={styles.inlineContainer}>
               <Text style={styles.text2}>
                 Achievement points: {item.points}
@@ -110,7 +113,7 @@ const styles = StyleSheet.create({
   },
   achievementImage: {
     width: 150,
-    height: 100,
+    height: 120,
     resizeMode: 'contain',
   },
   inlineContainer: {

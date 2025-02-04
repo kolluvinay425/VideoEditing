@@ -7,11 +7,12 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const RequirementItem = ({title, logo, icon, children}) => {
   const [expanded, setExpanded] = useState(false);
-
+  const calculateWidth = logo && icon ? '50%' : '70%';
   return (
     <View style={styles.item}>
       <View style={styles.titleContainer}>
@@ -22,11 +23,15 @@ const RequirementItem = ({title, logo, icon, children}) => {
               expanded ? styles.bulletLineExpanded : styles.bulletLine
             }></View>
         </View>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={[styles.title, {width: calculateWidth}]}>{title}</Text>
         {logo && (
-          <Image
+          <FastImage
             style={{width: 70, height: 60, marginLeft: 10}}
-            source={{uri: logo}}
+            source={{
+              uri: logo,
+              priority: FastImage.priority.normal,
+            }}
+            resizeMode={FastImage.resizeMode.contain}
           />
         )}
         {icon && (
@@ -44,7 +49,7 @@ const RequirementItem = ({title, logo, icon, children}) => {
   );
 };
 
-const RequirementScreen = ({item}) => {
+const RequirementScreen = ({item, language}) => {
   const handleComplete = () => {
     alert('Marked as Complete!');
   };
@@ -53,7 +58,7 @@ const RequirementScreen = ({item}) => {
     <ScrollView
       style={styles.scrollContainer}
       contentContainerStyle={styles.contentContainerStyle}>
-      <Text style={styles.descriptionText}>{item.description.en}</Text>
+      <Text style={styles.descriptionText}>{item.description[language]}</Text>
 
       <View style={styles.container}>
         <Text style={styles.descriptionText}></Text>
@@ -64,11 +69,11 @@ const RequirementScreen = ({item}) => {
         {item.requirements.map((requirement, index) => (
           <RequirementItem
             key={index}
-            title={requirement.heading.en}
+            title={requirement.heading[language]}
             logo={requirement.image}
             icon={requirement.icon_image}>
             <Text style={styles.descriptionText}>
-              {requirement.description.en}
+              {requirement.description[language]}
             </Text>
           </RequirementItem>
         ))}
@@ -151,6 +156,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#fff',
+    flexWrap: 'wrap',
   },
   expandedContent: {
     flexDirection: 'row',
