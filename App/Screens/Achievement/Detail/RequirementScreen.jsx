@@ -11,8 +11,25 @@ import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const RequirementItem = ({title, logo, icon, children}) => {
+  console.log('logoooooo------------------>', logo.length, logo);
   const [expanded, setExpanded] = useState(false);
-  const calculateWidth = logo && icon ? '50%' : '70%';
+  const calculateWidth = () => {
+    if (!icon && (!logo || logo.length === 0)) {
+      return '70%'; // No icon and no logo
+    }
+    if (icon && (!logo || logo.length === 0)) {
+      return '70%'; // Only icon exists
+    }
+
+    if (!icon && logo.length === 1) {
+      return '60%'; // Only 1 logo exists (no icon)
+    }
+
+    if (icon && logo.length > 0 && logo.length <= 2) {
+      return '50%'; // Both icon and logo exist (1 or 2 logos)
+    }
+    return '70%'; // Default case
+  };
   return (
     <View style={styles.item}>
       <View style={styles.titleContainer}>
@@ -23,19 +40,22 @@ const RequirementItem = ({title, logo, icon, children}) => {
               expanded ? styles.bulletLineExpanded : styles.bulletLine
             }></View>
         </View>
-        <Text style={[styles.title, {width: calculateWidth}]}>{title}</Text>
-        {logo && (
-          <FastImage
-            style={{width: 70, height: 60, marginLeft: 10}}
-            source={{
-              uri: logo,
-              priority: FastImage.priority.normal,
-            }}
-            resizeMode={FastImage.resizeMode.contain}
-          />
-        )}
+        <Text style={[styles.title, {width: calculateWidth()}]}>{title}</Text>
+
+        {logo &&
+          logo.length > 0 &&
+          logo.map((logo, index) => (
+            <FastImage
+              style={{width: 70, height: 60, marginLeft: 10}}
+              source={{
+                uri: logo,
+                priority: FastImage.priority.normal,
+              }}
+              resizeMode={FastImage.resizeMode.contain}
+            />
+          ))}
         {icon && (
-          <Icon name={icon} style={{paddingLeft: 10}} size={50} color="#fff" />
+          <Icon name={icon} style={{paddingBottom: 8}} size={50} color="#fff" />
         )}
       </View>
 
