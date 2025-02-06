@@ -1,13 +1,12 @@
-// GradientBackground.js
 import React from 'react';
-import {View, StyleSheet, ImageBackground} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 const GradientBackground = ({children}) => {
   return (
     <LinearGradient
-      colors={['#201C1C', '#464141', '#322D2D', '#322D2D']}
-      locations={[0.05, 0.34, 0.89, 1]}
+      colors={['#2a2a2a', '#1d1d1d', '#3e3e3e', '#2a2a2a']} // Deep, rich gradient colors
+      locations={[0.1, 0.4, 0.8, 1]} // Adjusted location for smoother gradient transitions
       style={styles.gradient}>
       {children}
     </LinearGradient>

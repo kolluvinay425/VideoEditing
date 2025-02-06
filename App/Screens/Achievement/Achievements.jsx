@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 10,
     aspectRatio: 1,
-    backgroundColor: '#3c3939',
+    backgroundColor: '#302d2d',
     overflow: 'hidden',
     borderRadius: 5,
     shadowColor: '#000',
