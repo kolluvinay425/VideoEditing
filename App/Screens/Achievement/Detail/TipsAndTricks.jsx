@@ -54,8 +54,8 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 15,
     marginBottom: 15,
-    borderWidth: 0.3,
-    borderColor: '#ffda1e', // Neon blue border for emphasis
+    borderWidth: 0.2,
+    borderColor: '#78691b', // Neon blue border for emphasis
     shadowColor: '#37331e',
     shadowOpacity: 0.7,
     shadowRadius: 15,
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginVertical: 10,
     borderWidth: 0.2,
-    borderColor: '#d2a425',
+    borderColor: '#483b17',
   },
 });
 
