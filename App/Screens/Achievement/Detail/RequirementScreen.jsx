@@ -11,8 +11,8 @@ import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const RequirementItem = ({title, logo, icon, children}) => {
-  console.log('logoooooo------------------>', logo.length, logo);
   const [expanded, setExpanded] = useState(false);
+
   const calculateWidth = () => {
     if (!icon && (!logo || logo.length === 0)) {
       return '70%'; // No icon and no logo
@@ -30,6 +30,7 @@ const RequirementItem = ({title, logo, icon, children}) => {
     }
     return '70%'; // Default case
   };
+
   return (
     <View style={styles.item}>
       <View style={styles.titleContainer}>
@@ -40,22 +41,22 @@ const RequirementItem = ({title, logo, icon, children}) => {
               expanded ? styles.bulletLineExpanded : styles.bulletLine
             }></View>
         </View>
+
         <Text style={[styles.title, {width: calculateWidth()}]}>{title}</Text>
 
         {logo &&
           logo.length > 0 &&
           logo.map((logo, index) => (
             <FastImage
-              style={{width: 70, height: 60, marginLeft: 10}}
-              source={{
-                uri: logo,
-                priority: FastImage.priority.normal,
-              }}
+              key={index}
+              style={styles.logo}
+              source={{uri: logo, priority: FastImage.priority.normal}}
               resizeMode={FastImage.resizeMode.contain}
             />
           ))}
+
         {icon && (
-          <Icon name={icon} style={{paddingBottom: 8}} size={50} color="#fff" />
+          <Icon name={icon} style={styles.icon} size={50} color="#fff" />
         )}
       </View>
 
@@ -79,10 +80,6 @@ const RequirementScreen = ({item, language}) => {
       style={styles.scrollContainer}
       contentContainerStyle={styles.contentContainerStyle}>
       <Text style={styles.descriptionText}>{item.description[language]}</Text>
-
-      <View style={styles.container}>
-        <Text style={styles.descriptionText}></Text>
-      </View>
 
       <Text style={styles.heading}>Requirements</Text>
       <View style={styles.container}>
@@ -108,13 +105,19 @@ const RequirementScreen = ({item, language}) => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#554f4a',
+    backgroundColor: '#3A3A3A',
     padding: 15,
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: 30,
     marginTop: 30,
     width: '70%',
     alignSelf: 'center',
+    borderWidth: 1,
+    borderColor: '#fff',
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 10, // Android shadow
   },
   buttonText: {
     color: '#fff',
@@ -125,7 +128,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#fff',
-    paddingBottom: 30,
+    paddingBottom: 20,
   },
   scrollContainer: {
     flex: 1,
@@ -134,37 +137,48 @@ const styles = StyleSheet.create({
   contentContainerStyle: {
     paddingBottom: 50,
   },
-  container: {},
   descriptionText: {
     color: '#f5f4f4',
   },
-  item: {},
+  item: {
+    backgroundColor: 'transparent', // Dark background for the item
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#b49415',
+    shadowColor: '#000',
+    shadowOpacity: 0.5,
+    shadowRadius: 15,
+    elevation: 10, // Android shadow
+  },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 10,
   },
   bulletContainer: {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 30,
+    marginRight: 15,
   },
   bullet: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#fffefe',
-    marginBottom: 2,
+    backgroundColor: '#fff',
+    marginBottom: 5,
   },
   bulletLine: {
     width: 2,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
     height: 'auto',
   },
   bulletLineExpanded: {
     width: 2,
-    backgroundColor: '#fffefe',
-    height: 15,
+    backgroundColor: '#fff',
+    height: 20,
     flex: 1,
   },
   bulletSpacer: {
@@ -173,10 +187,19 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   title: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#fff',
     flexWrap: 'wrap',
+  },
+  logo: {
+    width: 70,
+    height: 60,
+    marginLeft: 10,
+  },
+  icon: {
+    paddingBottom: 8,
+    marginLeft: 10,
   },
   expandedContent: {
     flexDirection: 'row',
