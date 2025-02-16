@@ -8,14 +8,14 @@ import {
   Image,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const RequirementItem = ({title, logo, icon, children}) => {
   const [expanded, setExpanded] = useState(false);
 
   const calculateWidth = () => {
-    if (!icon && (!logo || logo.length === 0)) {
-      return '70%'; // No icon and no logo
+    if (!icon && logo.length === 2) {
+      return '50%'; // only two logos and no icon
     }
     if (icon && (!logo || logo.length === 0)) {
       return '70%'; // Only icon exists
@@ -51,7 +51,7 @@ const RequirementItem = ({title, logo, icon, children}) => {
               key={index}
               style={styles.logo}
               source={{uri: logo, priority: FastImage.priority.normal}}
-              resizeMode={FastImage.resizeMode.contain}
+              resizeMode={FastImage.resizeMode.cover}
             />
           ))}
 
@@ -64,6 +64,7 @@ const RequirementItem = ({title, logo, icon, children}) => {
         <View style={styles.bulletSpacer}>
           <View style={styles.bulletLineExpanded}></View>
         </View>
+
         <View style={styles.content}>{children}</View>
       </View>
     </View>
@@ -145,7 +146,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 15,
     marginBottom: 20,
-    borderWidth: 1,
+    borderWidth: 0.8,
     borderColor: '#b49415',
     shadowColor: '#000',
     shadowOpacity: 0.5,
@@ -196,6 +197,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 60,
     marginLeft: 10,
+    borderRadius: 10,
   },
   icon: {
     paddingBottom: 8,

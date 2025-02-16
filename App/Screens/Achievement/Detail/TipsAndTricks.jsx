@@ -10,12 +10,7 @@ const TipsScreen = ({item, language}) => (
       <View style={styles.tabContent}>
         {item.tipsTricks.map((tip, index) => (
           <View key={index} style={styles.tipContainer}>
-            {/* Dark, Neon Gradient Header */}
-            {/* <LinearGradient
-              colors={['#1a1a1a', '#333333']}
-              style={styles.headingContainer}> */}
             <Text style={styles.heading}>{tip.heading[language]}</Text>
-            {/* </LinearGradient> */}
 
             {/* Display multiple images if present */}
             {tip.image &&
@@ -25,7 +20,7 @@ const TipsScreen = ({item, language}) => (
                   key={imgIndex}
                   style={styles.image}
                   source={{uri: url, priority: FastImage.priority.high}}
-                  resizeMode={FastImage.resizeMode.cover}
+                  resizeMode={FastImage.resizeMode.contain}
                 />
               ))}
 
@@ -43,7 +38,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flexGrow: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 5,
     paddingVertical: 20,
   },
   tabContent: {
@@ -52,11 +47,11 @@ const styles = StyleSheet.create({
   tipContainer: {
     backgroundColor: 'transparent', // Dark transparent card
     borderRadius: 15,
-    padding: 15,
+    padding: 10,
     marginBottom: 15,
-    borderWidth: 0.2,
-    borderColor: '#78691b', // Neon blue border for emphasis
-    shadowColor: '#37331e',
+    borderWidth: 0.5,
+    borderColor: '#b49415',
+    shadowColor: '#000',
     shadowOpacity: 0.7,
     shadowRadius: 15,
     elevation: 10, // Android shadow
@@ -88,8 +83,7 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     aspectRatio: 1.8,
-    borderRadius: 12,
-    marginVertical: 10,
+    marginTop: 5,
     borderWidth: 0.2,
     borderColor: '#483b17',
   },

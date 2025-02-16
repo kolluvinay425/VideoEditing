@@ -2,6 +2,10 @@
   "migIndex": 1,
   "data": [
     {
+      "path": "assets/fonts/GrechenFuemen-Regular.ttf",
+      "sha1": "38a61521741a0b6793c2e888c901818c4f8f4067"
+    },
+    {
       "path": "assets/fonts/Handmade.otf",
       "sha1": "56a4d0152ed396560c6a318cd93fccd6cd6ba367"
     },

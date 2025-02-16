@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialBottomTabNavigator} from 'react-native-paper/react-navigation';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -8,11 +8,15 @@ import ItemDetails from './Screens/Achievement/Detail/ItemDetails';
 import {createStackNavigator} from '@react-navigation/stack';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import GradientBackground from './Components/GradientBackground';
+import SacredQuartetEvent from './Screens/Home/Event';
+import images from './themes/Images';
+import EventDetails from './Screens/Home/EventDetails';
+import GuardianDetails from './Screens/Home/Guardian';
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
 
-function CreateProject() {
+function Create() {
   return (
     <Stack.Navigator initialRouteName="Achievements">
       <Stack.Screen
@@ -57,14 +61,62 @@ function CreateProject() {
     </Stack.Navigator>
   );
 }
+function CreateEventRoutes() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="EventHome"
+        component={HomeScreen} // Home screen inside the event tab
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="EventDetails"
+        component={EventDetails} // TabView for details
+        options={({navigation}) => ({
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <MaterialCommunityIcons
+                name="arrow-left"
+                size={24}
+                color="#e91e63"
+                style={{marginLeft: 10}}
+              />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => alert('Favorites clicked!')}>
+              <MaterialCommunityIcons
+                name="heart"
+                size={24}
+                color="#e91e63"
+                style={{marginRight: 10}}
+              />
+            </TouchableOpacity>
+          ),
+          headerStyle: {
+            backgroundColor: '#ebe1e1',
+            height: 190, // Adjust this value to set the desired header height
+          },
+          headerStyle: {backgroundColor: '#302D2D'},
+          headerTintColor: '#e91e63',
+          headerTitleStyle: {fontWeight: 'bold', fontSize: 20},
+          headerTitle: '', // Remove the title
+        })}
+      />
+      <Stack.Screen
+        name="GuardianDetails"
+        component={GuardianDetails} // Home screen inside the event tab
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+}
 
 function HomeScreen() {
   return (
-    <GradientBackground>
-      <View style={styles.container}>
-        <Text style={{color: 'white'}}>screen 1</Text>
-      </View>
-    </GradientBackground>
+    <>
+      <SacredQuartetEvent />
+    </>
   );
 }
 
@@ -88,23 +140,24 @@ function App() {
             initialRouteName="Home-Screen"
             activeColor="#e91e63"
             inactiveColor="#ffffff"
-            // labeled={false} // this will hide labels
-            // shifting={true} // this will show labels when tab is active
             barStyle={{backgroundColor: '#3a3839'}}>
             <Tab.Screen
               name="Home-Screen"
+              component={CreateEventRoutes} // Correctly use component here
               options={{
-                tabBarLabel: 'Home',
+                tabBarLabel: 'Event',
                 tabBarIcon: ({color}) => (
-                  <MaterialCommunityIcons name="home" color={color} size={26} />
+                  <Image
+                    source={images.event}
+                    style={{width: 26, height: 26, tintColor: color}}
+                  />
                 ),
-              }}>
-              {() => <HomeScreen />}
-            </Tab.Screen>
+              }}
+            />
 
             <Tab.Screen
               name="Achievements-Screen"
-              component={CreateProject}
+              component={Create}
               options={{
                 tabBarLabel: 'Achievements',
                 tabBarIcon: ({color}) => (
@@ -120,17 +173,17 @@ function App() {
             <Tab.Screen
               name="Events-Screen"
               options={{
-                tabBarLabel: 'Events',
+                tabBarLabel: 'Tracker',
                 tabBarIcon: ({color}) => (
                   <MaterialCommunityIcons
-                    name="calendar"
+                    name="arrow-right-bold-circle-outline"
                     color={color}
                     size={26}
                   />
                 ),
-              }}>
-              {() => <EventsScreen />}
-            </Tab.Screen>
+              }}
+              component={EventsScreen} // Correctly use component here as well
+            />
           </Tab.Navigator>
         </NavigationContainer>
       </GradientBackground>

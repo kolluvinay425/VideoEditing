@@ -5,6 +5,7 @@ const images = {
   headShot: require('../../assets/icons/headshot.png'),
   distance: require('../../assets/icons/distance.png'),
   platinumTier: require('../../assets/icons/platinumTier.png'),
+  event: require('../../assets/icons/event.png'),
   guns: {
     ar: {
       akm: require('../../assets/images/guns/ar/akm.png'),
