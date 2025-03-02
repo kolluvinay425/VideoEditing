@@ -7,7 +7,8 @@ import {
   Dimensions,
   ScrollView,
 } from 'react-native';
-import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
+import ReusableTabView from '../../../Components/TabView';
+import {SceneMap} from 'react-native-tab-view';
 import GradientBackground from '../../../Components/GradientBackground';
 import images from '../../../themes/Images';
 const {width} = Dimensions.get('window');
@@ -65,22 +66,11 @@ const ItemDetails = ({route}) => {
           </View>
         </View>
 
-        <TabView
-          navigationState={{index, routes}}
+        <ReusableTabView
+          routes={routes}
           renderScene={renderScene}
+          index={index}
           onIndexChange={setIndex}
-          initialLayout={{width}}
-          renderTabBar={props => (
-            <TabBar
-              {...props}
-              indicatorStyle={styles.indicator}
-              style={styles.tabBar}
-              labelStyle={styles.label}
-              tabStyle={styles.tabStyle}
-              activeColor="#ffffff"
-              inactiveColor="#f0e9e9"
-            />
-          )}
         />
       </GradientBackground>
     </>
@@ -133,7 +123,7 @@ const styles = StyleSheet.create({
     // marginLeft: 5,
   },
   tabBar: {
-    backgroundColor: '#302D2D',
+    backgroundColor: '#2a2a2a',
   },
   indicator: {
     backgroundColor: '#e91e63',

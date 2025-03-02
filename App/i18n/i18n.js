@@ -16,7 +16,7 @@ const getDeviceLanguage = () => {
 const fetchTranslations = async language => {
   try {
     const response = await fetch(
-      `http://localhost:3001/api/translations/${language}`,
+      `https://pubg-guides.onrender.com/api/translations/${language}`,
     );
     const data = await response.json();
     return data.translations || {};

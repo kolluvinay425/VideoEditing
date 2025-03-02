@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
   ScrollView,
 } from 'react-native';
-import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
+import ReusableTabView from '../../Components/TabView';
 import SearchBar from '../../Components/SearchBar';
 import {useNavigation} from '@react-navigation/native';
 import GradientBackground from '../../Components/GradientBackground';
@@ -19,7 +19,7 @@ import FastImage from 'react-native-fast-image';
 
 const {width} = Dimensions.get('window');
 
-const Achievements = () => {
+const Achievements = ({achievements, loading, handleQuery}) => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'all', title: 'All'},
@@ -31,30 +31,10 @@ const Achievements = () => {
     {key: 'social', title: 'Social'},
     {key: 'general', title: 'General'},
   ]);
-  const [achievements, setAchievements] = useState([]);
-  const [loading, setLoading] = useState(true);
+
   const [language, setLanguage] = useState('en'); // Default language is English
   const [loadingLanguage, setLoadingLanguage] = useState(false); // New state to handle language change loading
   const navigation = useNavigation();
-
-  useEffect(() => {
-    const fetchAchievements = async () => {
-      try {
-        const response = await fetch(
-          'http://localhost:3001/api/achievements/all',
-        );
-        const data = await response.json();
-        setAchievements(data.achievements);
-        console.log('----------------------------->', data.achievements[0]);
-      } catch (error) {
-        console.error('Error fetching achievements:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAchievements();
-  }, []);
 
   const renderScene = ({route}) => {
     if (loading || loadingLanguage) {
@@ -68,10 +48,15 @@ const Achievements = () => {
       );
     }
 
+    // const filteredAchievements =
+    //   route.key === 'all'
+    //     ? achievements
+    //     : achievements.filter(ach => ach.category === route.key);
+
     const filteredAchievements =
       route.key === 'all'
-        ? achievements
-        : achievements.filter(ach => ach.category === route.key);
+        ? achievements || []
+        : (achievements || []).filter(ach => ach.category === route.key);
 
     return (
       <FlatList
@@ -82,16 +67,21 @@ const Achievements = () => {
             onPress={() => navigation.navigate('ItemDetails', {item, language})}
             style={styles.itemContainer}>
             <FastImage
-              source={images.achievement}
+              source={{
+                uri: 'https://res.cloudinary.com/vny/image/upload/v1739896428/AchievementSkeliton_l2dkqc.png',
+              }}
               style={{
                 width: 60,
                 height: 50,
               }}
             />
+
             <Text style={styles.itemText}>{item.name[language]}</Text>
             <View style={styles.inlineContainer}>
               <FastImage
-                source={images.pointsIcon}
+                source={{
+                  uri: 'https://res.cloudinary.com/vny/image/upload/v1739961906/points_vhi3dv.png',
+                }}
                 style={styles.inlineImage}
               />
               <Text style={styles.itemText}>{item.points}</Text>
@@ -131,7 +121,7 @@ const Achievements = () => {
 
   return (
     <>
-      <SearchBar />
+      <SearchBar handleQuery={handleQuery} />
       <GradientBackground>
         <ScrollView
           style={{flexGrow: 0}}
@@ -158,23 +148,11 @@ const Achievements = () => {
           </View>
         </ScrollView>
 
-        <TabView
-          navigationState={{index, routes}}
-          renderScene={SceneMap(sceneMap)}
+        <ReusableTabView
+          routes={routes}
+          renderScene={renderScene}
+          index={index}
           onIndexChange={setIndex}
-          initialLayout={{width}}
-          renderTabBar={props => (
-            <TabBar
-              {...props}
-              scrollEnabled
-              indicatorStyle={styles.indicator}
-              style={styles.tabBar}
-              labelStyle={styles.label}
-              tabStyle={styles.tabStyle}
-              activeColor="#ffffff"
-              inactiveColor="#f0e9e9"
-            />
-          )}
         />
       </GradientBackground>
     </>
@@ -208,7 +186,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   tabBar: {
-    backgroundColor: '#363434',
+    backgroundColor: '#2a2a2a',
   },
   indicator: {
     backgroundColor: '#e91e63',

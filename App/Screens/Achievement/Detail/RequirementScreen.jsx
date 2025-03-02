@@ -44,16 +44,18 @@ const RequirementItem = ({title, logo, icon, children}) => {
 
         <Text style={[styles.title, {width: calculateWidth()}]}>{title}</Text>
 
-        {logo &&
-          logo.length > 0 &&
-          logo.map((logo, index) => (
-            <FastImage
-              key={index}
-              style={styles.logo}
-              source={{uri: logo, priority: FastImage.priority.normal}}
-              resizeMode={FastImage.resizeMode.cover}
-            />
-          ))}
+        <View style={styles.logoScroll}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {logo?.map((item, index) => (
+              <FastImage
+                key={index}
+                style={styles.logo}
+                source={{uri: item, priority: FastImage.priority.normal}}
+                resizeMode={FastImage.resizeMode.cover}
+              />
+            ))}
+          </ScrollView>
+        </View>
 
         {icon && (
           <Icon name={icon} style={styles.icon} size={50} color="#fff" />
@@ -153,11 +155,7 @@ const styles = StyleSheet.create({
     shadowRadius: 15,
     elevation: 10, // Android shadow
   },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
+
   bulletContainer: {
     flexDirection: 'column',
     alignItems: 'center',
@@ -193,12 +191,24 @@ const styles = StyleSheet.create({
     color: '#fff',
     flexWrap: 'wrap',
   },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    overflow: 'hidden', // Prevent overflow
+  },
+  logoScroll: {
+    flexDirection: 'row',
+    maxWidth: '50%', // Limit logo container width
+    overflow: 'hidden',
+  },
   logo: {
-    width: 70,
-    height: 60,
+    width: 50,
+    height: 50,
     marginLeft: 10,
     borderRadius: 10,
   },
+
   icon: {
     paddingBottom: 8,
     marginLeft: 10,

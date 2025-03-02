@@ -1,5 +1,11 @@
 import React from 'react';
-import {ScrollView, View, Text, StyleSheet} from 'react-native';
+import {
+  ScrollView,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import GradientBackground from '../../../Components/GradientBackground';
@@ -11,7 +17,6 @@ const TipsScreen = ({item, language}) => (
         {item.tipsTricks.map((tip, index) => (
           <View key={index} style={styles.tipContainer}>
             <Text style={styles.heading}>{tip.heading[language]}</Text>
-
             {/* Display multiple images if present */}
             {tip.image &&
               tip.image.length > 0 &&

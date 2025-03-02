@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -11,7 +11,16 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const {width, height} = Dimensions.get('window');
 
-const SearchBar = () => {
+const SearchBar = ({handleQuery}) => {
+  const [inputValue, setInputValue] = useState('');
+
+  const handleInputChange = text => {
+    setInputValue(text);
+    if (handleQuery) {
+      handleQuery(text);
+    }
+  };
+
   return (
     <ImageBackground
       source={{
@@ -30,6 +39,8 @@ const SearchBar = () => {
           style={styles.searchIcon}
         />
         <TextInput
+          value={inputValue}
+          onChangeText={handleInputChange}
           style={styles.searchInput}
           placeholder="Type Here..."
           placeholderTextColor="#888"
@@ -50,7 +61,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   backgroundImage: {
-    height: height * 0.3, // Adjusted to ensure it maintains a reasonable height
+    height: height * 0.3,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -60,48 +71,45 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Adjust blur effect as needed
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   searchContainer: {
-    flexDirection: 'row', // Adjust to align the icon and text input
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: width * 0.7,
-    height: height * 0.05, // Maintain the height
-    backgroundColor: 'rgba(243, 238, 238, 0.8)', // Adjust the background of the search bar
-    borderRadius: 25, // Increase the radius as needed
-    position: 'relative',
-    marginBottom: 0, // Ensure no margin at the bottom
-    paddingHorizontal: 10, // Add padding to align icon and input
-
+    height: height * 0.05,
+    backgroundColor: 'rgba(243, 238, 238, 0.8)',
+    borderRadius: 25,
+    paddingHorizontal: 10,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
-    shadowRadius: 2, // Add elevation for Android
+    shadowRadius: 2,
     elevation: 5,
   },
   achievementsContainer: {
-    alignItems: 'flex-start', // Align the text to the start
-    width: width * 0.7, // Match the width of the search bar
+    alignItems: 'flex-start',
+    width: width * 0.7,
     marginBottom: 10,
   },
   achievementsText: {
-    fontSize: 30, // Increased font size
+    fontSize: 30,
     color: '#f6f3f3',
     fontWeight: 'bold',
-    fontFamily: 'italic',
+    fontStyle: 'italic',
   },
   searchIcon: {
-    marginRight: 10, // Add margin to separate icon from input
+    marginRight: 10,
   },
   searchInput: {
     flex: 1,
     height: '100%',
-    // color: '#000',
-    backgroundColor: 'transparent', // Ensure the background is transparent
+    backgroundColor: 'transparent',
+    color: '#000',
   },
   filterIcon: {
-    marginLeft: 10, // Add margin to separate input from filter icon
+    marginLeft: 10,
   },
 });
 
