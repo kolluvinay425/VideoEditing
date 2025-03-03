@@ -1,25 +1,28 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   StyleSheet,
   View,
   Text,
   Dimensions,
-  FlatList,
   Image,
   TouchableOpacity,
   ActivityIndicator,
   ScrollView,
+  Animated,
+  FlatList,
 } from 'react-native';
 import ReusableTabView from '../../Components/TabView';
 import SearchBar from '../../Components/SearchBar';
 import {useNavigation} from '@react-navigation/native';
 import GradientBackground from '../../Components/GradientBackground';
-import images from '../../themes/Images';
 import FastImage from 'react-native-fast-image';
 
 const {width} = Dimensions.get('window');
 
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+
 const Achievements = ({achievements, loading, handleQuery}) => {
+  const scrollY = useRef(new Animated.Value(0)).current;
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'all', title: 'All'},
@@ -32,13 +35,12 @@ const Achievements = ({achievements, loading, handleQuery}) => {
     {key: 'general', title: 'General'},
   ]);
 
-  const [language, setLanguage] = useState('en'); // Default language is English
-  const [loadingLanguage, setLoadingLanguage] = useState(false); // New state to handle language change loading
+  const [language, setLanguage] = useState('en');
+  const [loadingLanguage, setLoadingLanguage] = useState(false);
   const navigation = useNavigation();
 
   const renderScene = ({route}) => {
     if (loading || loadingLanguage) {
-      // Show loading when achievements or language is loading
       return (
         <ActivityIndicator
           style={{padding: 100}}
@@ -48,20 +50,20 @@ const Achievements = ({achievements, loading, handleQuery}) => {
       );
     }
 
-    // const filteredAchievements =
-    //   route.key === 'all'
-    //     ? achievements
-    //     : achievements.filter(ach => ach.category === route.key);
-
     const filteredAchievements =
       route.key === 'all'
         ? achievements || []
         : (achievements || []).filter(ach => ach.category === route.key);
 
     return (
-      <FlatList
+      <AnimatedFlatList
         data={filteredAchievements}
         keyExtractor={(item, index) => `${route.key}-${index}`}
+        onScroll={Animated.event(
+          [{nativeEvent: {contentOffset: {y: scrollY}}}],
+          {useNativeDriver: false},
+        )}
+        scrollEventThrottle={16}
         renderItem={({item}) => (
           <TouchableOpacity
             onPress={() => navigation.navigate('ItemDetails', {item, language})}
@@ -70,12 +72,8 @@ const Achievements = ({achievements, loading, handleQuery}) => {
               source={{
                 uri: 'https://res.cloudinary.com/vny/image/upload/v1739896428/AchievementSkeliton_l2dkqc.png',
               }}
-              style={{
-                width: 60,
-                height: 50,
-              }}
+              style={{width: 60, height: 50}}
             />
-
             <Text style={styles.itemText}>{item.name[language]}</Text>
             <View style={styles.inlineContainer}>
               <FastImage
@@ -112,18 +110,18 @@ const Achievements = ({achievements, loading, handleQuery}) => {
   ];
 
   const handleLanguageChange = lang => {
-    setLoadingLanguage(true); // Start loading effect
-    setLanguage(lang); // Set new language
+    setLoadingLanguage(true);
+    setLanguage(lang);
     setTimeout(() => {
-      setLoadingLanguage(false); // End loading effect after 1 second (or adjust time as needed)
+      setLoadingLanguage(false);
     }, 1000);
   };
 
   return (
     <>
-      <SearchBar handleQuery={handleQuery} />
+      <SearchBar handleQuery={handleQuery} scrollY={scrollY} />
       <GradientBackground>
-        <ScrollView
+        {/* <ScrollView
           style={{flexGrow: 0}}
           horizontal
           showsHorizontalScrollIndicator={false}>
@@ -131,7 +129,7 @@ const Achievements = ({achievements, loading, handleQuery}) => {
             {languages.map(lang => (
               <TouchableOpacity
                 key={lang}
-                onPress={() => handleLanguageChange(lang)} // Use the new handleLanguageChange function
+                onPress={() => handleLanguageChange(lang)}
                 style={[
                   styles.languageButton,
                   language === lang && styles.selectedLanguageButton,
@@ -146,7 +144,7 @@ const Achievements = ({achievements, loading, handleQuery}) => {
               </TouchableOpacity>
             ))}
           </View>
-        </ScrollView>
+        </ScrollView> */}
 
         <ReusableTabView
           routes={routes}

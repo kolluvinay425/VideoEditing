@@ -6,12 +6,13 @@ import {
   TextInput,
   Text,
   Dimensions,
+  Animated,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const {width, height} = Dimensions.get('window');
 
-const SearchBar = ({handleQuery}) => {
+const SearchBar = ({handleQuery, scrollY}) => {
   const [inputValue, setInputValue] = useState('');
 
   const handleInputChange = text => {
@@ -21,47 +22,63 @@ const SearchBar = ({handleQuery}) => {
     }
   };
 
+  const containerHeight = scrollY.interpolate({
+    inputRange: [0, 150],
+    outputRange: [height * 0.3, height * 0.15], // Shrinks the entire search bar container
+    extrapolate: 'clamp',
+  });
+
+  const textOpacity = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [1, 0], // Fades out text
+    extrapolate: 'clamp',
+  });
+
   return (
-    <ImageBackground
-      source={{
-        uri: 'https://wallpapers.com/images/high/man-pubg-lite-character-poster-pgj9qxp3jiv28gg2.webp',
-      }}
-      style={styles.backgroundImage}>
-      <View style={styles.overlay} />
-      <View style={styles.achievementsContainer}>
-        <Text style={styles.achievementsText}>Achievements</Text>
-      </View>
-      <View style={styles.searchContainer}>
-        <MaterialIcons
-          name="search"
-          size={20}
-          color="#888"
-          style={styles.searchIcon}
-        />
-        <TextInput
-          value={inputValue}
-          onChangeText={handleInputChange}
-          style={styles.searchInput}
-          placeholder="Type Here..."
-          placeholderTextColor="#888"
-        />
-        <MaterialIcons
-          name="filter-list"
-          size={20}
-          color="#888"
-          style={styles.filterIcon}
-        />
-      </View>
-    </ImageBackground>
+    <Animated.View style={[styles.container, {height: containerHeight}]}>
+      <ImageBackground
+        source={{
+          uri: 'https://wallpapers.com/images/high/man-pubg-lite-character-poster-pgj9qxp3jiv28gg2.webp',
+        }}
+        style={styles.backgroundImage}>
+        <View style={styles.overlay} />
+        <Animated.View
+          style={[styles.achievementsContainer, {opacity: textOpacity}]}>
+          <Text style={styles.achievementsText}>Achievements</Text>
+        </Animated.View>
+        <View style={styles.searchContainer}>
+          <MaterialIcons
+            name="search"
+            size={20}
+            color="#888"
+            style={styles.searchIcon}
+          />
+          <TextInput
+            value={inputValue}
+            onChangeText={handleInputChange}
+            style={styles.searchInput}
+            placeholder="Type Here..."
+            placeholderTextColor="#888"
+          />
+          <MaterialIcons
+            name="filter-list"
+            size={20}
+            color="#888"
+            style={styles.filterIcon}
+          />
+        </View>
+      </ImageBackground>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: '100%',
   },
   backgroundImage: {
-    height: height * 0.3,
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -82,16 +99,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(243, 238, 238, 0.8)',
     borderRadius: 25,
     paddingHorizontal: 10,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
     elevation: 5,
+    position: 'absolute',
+    bottom: 20,
   },
   achievementsContainer: {
-    alignItems: 'flex-start',
-    width: width * 0.7,
-    marginBottom: 10,
+    position: 'absolute',
+    top: 30,
+    alignItems: 'center',
   },
   achievementsText: {
     fontSize: 30,
@@ -105,7 +120,6 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     height: '100%',
-    backgroundColor: 'transparent',
     color: '#000',
   },
   filterIcon: {
