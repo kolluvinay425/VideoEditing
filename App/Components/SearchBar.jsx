@@ -1,18 +1,22 @@
 import React, {useState} from 'react';
 import {
+  Animated,
   StyleSheet,
   View,
   ImageBackground,
   TextInput,
   Text,
   Dimensions,
-  Animated,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const {width, height} = Dimensions.get('window');
 
+const HEADER_EXPANDED_HEIGHT = height * 0.3;
+const HEADER_COLLAPSED_HEIGHT = height * 0.15;
+
 const SearchBar = ({handleQuery, scrollY}) => {
+  console.log('from searchbar-------->', scrollY);
   const [inputValue, setInputValue] = useState('');
 
   const handleInputChange = text => {
@@ -22,20 +26,22 @@ const SearchBar = ({handleQuery, scrollY}) => {
     }
   };
 
-  const containerHeight = scrollY.interpolate({
-    inputRange: [0, 150],
-    outputRange: [height * 0.3, height * 0.15], // Shrinks the entire search bar container
+  // Animate header height based on scroll position
+  const headerHeight = scrollY.interpolate({
+    inputRange: [0, HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT],
+    outputRange: [HEADER_EXPANDED_HEIGHT, HEADER_COLLAPSED_HEIGHT],
     extrapolate: 'clamp',
   });
 
-  const textOpacity = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: [1, 0], // Fades out text
+  // Opacity effect for title
+  const titleOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT],
+    outputRange: [1, 0],
     extrapolate: 'clamp',
   });
 
   return (
-    <Animated.View style={[styles.container, {height: containerHeight}]}>
+    <Animated.View style={[styles.container, {height: headerHeight}]}>
       <ImageBackground
         source={{
           uri: 'https://wallpapers.com/images/high/man-pubg-lite-character-poster-pgj9qxp3jiv28gg2.webp',
@@ -43,9 +49,10 @@ const SearchBar = ({handleQuery, scrollY}) => {
         style={styles.backgroundImage}>
         <View style={styles.overlay} />
         <Animated.View
-          style={[styles.achievementsContainer, {opacity: textOpacity}]}>
+          style={[styles.achievementsContainer, {opacity: titleOpacity}]}>
           <Text style={styles.achievementsText}>Achievements</Text>
         </Animated.View>
+
         <View style={styles.searchContainer}>
           <MaterialIcons
             name="search"
@@ -75,19 +82,16 @@ const SearchBar = ({handleQuery, scrollY}) => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
+    overflow: 'hidden',
   },
   backgroundImage: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
   },
   overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   searchContainer: {
@@ -99,14 +103,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(243, 238, 238, 0.8)',
     borderRadius: 25,
     paddingHorizontal: 10,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
     elevation: 5,
-    position: 'absolute',
-    bottom: 20,
   },
   achievementsContainer: {
-    position: 'absolute',
-    top: 30,
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    width: width * 0.7,
+    marginBottom: 10,
   },
   achievementsText: {
     fontSize: 30,
@@ -120,6 +126,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     height: '100%',
+    backgroundColor: 'transparent',
     color: '#000',
   },
   filterIcon: {

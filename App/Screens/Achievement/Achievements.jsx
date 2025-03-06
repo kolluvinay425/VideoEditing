@@ -16,6 +16,7 @@ import SearchBar from '../../Components/SearchBar';
 import {useNavigation} from '@react-navigation/native';
 import GradientBackground from '../../Components/GradientBackground';
 import FastImage from 'react-native-fast-image';
+import TabViewScrollable from '../../Components/TabViewScrollable';
 
 const {width} = Dimensions.get('window');
 
@@ -119,7 +120,7 @@ const Achievements = ({achievements, loading, handleQuery}) => {
 
   return (
     <>
-      <SearchBar handleQuery={handleQuery} scrollY={scrollY} />
+      {/* <SearchBar handleQuery={handleQuery} scrollY={scrollY} /> */}
       <GradientBackground>
         {/* <ScrollView
           style={{flexGrow: 0}}
@@ -146,12 +147,13 @@ const Achievements = ({achievements, loading, handleQuery}) => {
           </View>
         </ScrollView> */}
 
-        <ReusableTabView
+        {/* <ReusableTabView
           routes={routes}
           renderScene={renderScene}
           index={index}
           onIndexChange={setIndex}
-        />
+        /> */}
+        <TabViewScrollable />
       </GradientBackground>
     </>
   );
