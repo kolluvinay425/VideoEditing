@@ -16,6 +16,7 @@ import {useNavigation} from '@react-navigation/native';
 import GradientBackground from '../../Components/GradientBackground';
 import images from '../../themes/Images';
 import FastImage from 'react-native-fast-image';
+import CollapsibleTabView from '../../Components/TabBarCollapseble';
 
 const {width} = Dimensions.get('window');
 
@@ -121,9 +122,9 @@ const Achievements = ({achievements, loading, handleQuery}) => {
 
   return (
     <>
-      <SearchBar handleQuery={handleQuery} />
+      {/* <SearchBar handleQuery={handleQuery} /> */}
       <GradientBackground>
-        <ScrollView
+        {/* <ScrollView
           style={{flexGrow: 0}}
           horizontal
           showsHorizontalScrollIndicator={false}>
@@ -146,14 +147,18 @@ const Achievements = ({achievements, loading, handleQuery}) => {
               </TouchableOpacity>
             ))}
           </View>
-        </ScrollView>
-
-        <ReusableTabView
+        </ScrollView> */}
+        <CollapsibleTabView
+          routes={routes}
+          achievements={achievements}
+          loading={loading}
+        />
+        {/* <ReusableTabView
           routes={routes}
           renderScene={renderScene}
           index={index}
           onIndexChange={setIndex}
-        />
+        /> */}
       </GradientBackground>
     </>
   );
@@ -222,6 +227,9 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#d5cece',
     fontWeight: 'bold',
+    width: '100%', // Ensure text doesn't exceed its container
+    textAlign: 'center', // Keep text centered
+    overflow: 'hidden', // Hide overflow instead of wrapping
   },
   inlineContainer: {
     flexDirection: 'row',
