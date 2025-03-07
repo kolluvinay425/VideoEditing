@@ -153,6 +153,7 @@ const Achievements = ({achievements, loading, handleQuery}) => {
           achievements={achievements}
           loading={loading}
         />
+        {/* <PullToRefresh /> */}
         {/* <ReusableTabView
           routes={routes}
           renderScene={renderScene}

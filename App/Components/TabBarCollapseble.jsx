@@ -1,6 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
   View,
   Text,
@@ -60,12 +59,7 @@ const TabScene = ({
 const CollapsibleTabView = ({achievements, loading, routes}) => {
   const [tabIndex, setIndex] = useState(0);
   const [language, setLanguage] = useState('en');
-  //   const [routes] = useState([
-  //     {key: 'tab1', title: 'Tab1'},
-  //     {key: 'tab2', title: 'Tab2'},
-  //   ]);
-  const [tab1Data] = useState(Array(40).fill(0));
-  const [tab2Data] = useState(Array(30).fill(0));
+
   const scrollY = useRef(new Animated.Value(0)).current;
   let listRefArr = useRef([]);
   let listOffset = useRef({});
@@ -127,13 +121,45 @@ const CollapsibleTabView = ({achievements, loading, routes}) => {
   const renderHeader = () => {
     return (
       <>
-        {/* <Animated.View style={[styles.header, {transform: [{translateY: y}]}]}> */}
         <SearchBar scrollY={scrollY} headerHeight={HeaderHeight} />
-        {/* </Animated.View> */}
       </>
     );
   };
+  const renderTabBar = props => {
+    // Interpolate scrollY to move the TabBar and SearchBar together
+    const y = scrollY.interpolate({
+      inputRange: [0, 1, HeaderHeight],
+      outputRange: [0, 0, -HeaderHeight + 150], // Make TabBar follow SearchBar
+      extrapolateRight: 'clamp',
+    });
 
+    return (
+      <Animated.View
+        style={{
+          zIndex: 1,
+          position: 'absolute',
+          top: HeaderHeight, // Make TabBar stick below the SearchBar
+          transform: [{translateY: y}], // Move the TabBar with the SearchBar
+          width: '100%',
+        }}>
+        <TabBar
+          {...props}
+          onTabPress={({route, preventDefault}) => {
+            if (isListGliding.current) {
+              preventDefault();
+            }
+          }}
+          labelStyle={styles.label}
+          tabStyle={styles.tabStyle}
+          style={styles.tab}
+          renderLabel={renderLabel}
+          indicatorStyle={styles.indicator}
+          activeColor="#ffffff"
+          inactiveColor="#f0e9e9"
+        />
+      </Animated.View>
+    );
+  };
   const rednerTab1Item = ({item, index}) => {
     return (
       <View
@@ -249,71 +275,6 @@ const CollapsibleTabView = ({achievements, loading, routes}) => {
     );
   };
 
-  //   const renderScene = ({route}) => {
-  //     let numCols = 3;
-  //     let data;
-  //     let renderItem = rednerTab1Item;
-
-  //     return (
-  //       <TabScene
-  //         numCols={numCols}
-  //         data={data}
-  //         renderItem={renderItem}
-  //         scrollY={scrollY}
-  //         onMomentumScrollBegin={onMomentumScrollBegin}
-  //         onScrollEndDrag={onScrollEndDrag}
-  //         onMomentumScrollEnd={onMomentumScrollEnd}
-  //         onGetRef={ref => {
-  //           if (ref) {
-  //             const found = listRefArr.current.find(e => e.key === route.key);
-  //             if (!found) {
-  //               listRefArr.current.push({
-  //                 key: route.key,
-  //                 value: ref,
-  //               });
-  //             }
-  //           }
-  //         }}
-  //       />
-  //     );
-  //   };
-
-  const renderTabBar = props => {
-    // Interpolate scrollY to move the TabBar and SearchBar together
-    const y = scrollY.interpolate({
-      inputRange: [0, HeaderHeight],
-      outputRange: [0, -HeaderHeight + 150], // Make TabBar follow SearchBar
-      extrapolateRight: 'clamp',
-    });
-
-    return (
-      <Animated.View
-        style={{
-          zIndex: 1,
-          position: 'absolute',
-          top: HeaderHeight, // Make TabBar stick below the SearchBar
-          transform: [{translateY: y}], // Move the TabBar with the SearchBar
-          width: '100%',
-        }}>
-        <TabBar
-          {...props}
-          onTabPress={({route, preventDefault}) => {
-            if (isListGliding.current) {
-              preventDefault();
-            }
-          }}
-          labelStyle={styles.label}
-          tabStyle={styles.tabStyle}
-          style={styles.tab}
-          renderLabel={renderLabel}
-          indicatorStyle={styles.indicator}
-          activeColor="#ffffff"
-          inactiveColor="#f0e9e9"
-        />
-      </Animated.View>
-    );
-  };
-
   const renderTabView = () => {
     return (
       <TabView
@@ -342,9 +303,6 @@ const styles = StyleSheet.create({
     top: 0,
     height: HeaderHeight,
     width: '100%',
-    // backgroundColor: '#40C4FF',
-    // alignItems: 'center',
-    // justifyContent: 'center',
     position: 'absolute',
   },
   label: {

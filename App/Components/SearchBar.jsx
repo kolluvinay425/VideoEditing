@@ -23,14 +23,14 @@ const SearchBar = ({handleQuery, scrollY, headerHeight}) => {
   };
 
   const height = scrollY.interpolate({
-    inputRange: [0, headerHeight],
-    outputRange: [0, -headerHeight + 150],
+    inputRange: [0, 1, headerHeight],
+    outputRange: [0, 0, -headerHeight + 150],
     extrapolateRight: 'clamp',
   });
 
   const searchTranslateY = scrollY.interpolate({
-    inputRange: [0, headerHeight],
-    outputRange: [0, headerHeight - 230],
+    inputRange: [0, 1, headerHeight],
+    outputRange: [0, 0, headerHeight - 230],
     extrapolateRight: 'clamp',
   });
 
