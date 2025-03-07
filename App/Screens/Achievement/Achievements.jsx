@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Dimensions} from 'react-native';
 import GradientBackground from '../../Components/GradientBackground';
 import TabBarCollapsible from '../../Components/CollapsibleTabView';
+import {SearchBar} from 'react-native-screens';
 
 const Achievements = ({achievements, loading, handleQuery}) => {
   const [routes] = useState([
@@ -20,9 +20,10 @@ const Achievements = ({achievements, loading, handleQuery}) => {
       <GradientBackground>
         <TabBarCollapsible
           routes={routes}
-          achievements={achievements}
+          data={achievements}
           loading={loading}
           handleQuery={handleQuery}
+          headerName="SearchBar"
         />
       </GradientBackground>
     </>

@@ -1,5 +1,7 @@
 import React from 'react';
 import {View, Dimensions, Animated, FlatList} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
+import Item from '../Screens/Achievement/Detail/Item';
 
 const TabBarHeight = 50;
 const HeaderHeight = 300;
@@ -13,9 +15,11 @@ const TabScene = ({
   onScrollEndDrag,
   onMomentumScrollEnd,
   onMomentumScrollBegin,
+  headerName,
 }) => {
   const windowHeight = Dimensions.get('window').height;
 
+  // if (headerName === 'SearchBar') {
   return (
     <Animated.FlatList
       scrollToOverflowEnabled={true}
@@ -40,6 +44,11 @@ const TabScene = ({
       keyExtractor={(item, index) => index.toString()}
     />
   );
+  // } else {
+  //   console.log('im an item ???-------->', data.language);
+
+  //   // <Item item={data.item} />;
+  // }
 };
 
 export default TabScene;

@@ -1,43 +1,47 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  Dimensions,
-  ScrollView,
-} from 'react-native';
-import ReusableTabView from '../../../Components/TabView';
-import {SceneMap} from 'react-native-tab-view';
+import {View, Text, StyleSheet, Image, Dimensions} from 'react-native';
 import GradientBackground from '../../../Components/GradientBackground';
 import images from '../../../themes/Images';
-const {width} = Dimensions.get('window');
-import Requirement from './RequirementScreen';
-import TipsScreen from './TipsAndTricks';
 import FastImage from 'react-native-fast-image';
-import TabBarCollapsible from '../../../Components/CollapsibleTabView';
-import Item from './Item';
-const ItemDetails = ({route}) => {
-  const {item, language} = route.params;
-  const [index, setIndex] = useState(0);
-  const [routes] = useState([
-    {key: 'info', title: 'Info'},
-    {key: 'tips', title: 'Tips'},
-  ]);
 
-  const renderScene = SceneMap({
-    info: () => <Requirement language={language} item={item} />,
-    tips: () => <TipsScreen language={language} item={item} />,
-  });
-
+const Item = ({item, language}) => {
+  console.log('here i am----->item');
   return (
     <>
       <GradientBackground>
-        <TabBarCollapsible
-          routes={routes}
-          data={route.params}
-          headerName="Details"
-        />
+        <View style={styles.headerContainer}>
+          <View style={styles.header1}>
+            <FastImage
+              source={images.achievement}
+              style={styles.achievementImage}
+            />
+            <Text style={styles.text1}>{item.name[language]}</Text>
+          </View>
+
+          <View style={styles.header2}>
+            <Text style={styles.text2}>
+              Hardness: {item.hardness[language]}
+            </Text>
+            <View style={styles.inlineContainer}>
+              <Text style={styles.text2}>
+                Achievement points: {item.points}
+              </Text>
+              <Image
+                source={images.pointsIcon}
+                style={styles.inlineImageSmall}
+              />
+            </View>
+            {item.rewards.title && (
+              <View style={styles.inlineContainer}>
+                <Text style={styles.text2}>Title</Text>
+                <Image
+                  source={{uri: item.rewards.titleImage}}
+                  style={styles.inlineImageLarge}
+                />
+              </View>
+            )}
+          </View>
+        </View>
       </GradientBackground>
     </>
   );
@@ -104,4 +108,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ItemDetails;
+export default Item;

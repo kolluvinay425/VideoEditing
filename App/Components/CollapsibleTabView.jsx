@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Animated,
-  ScrollView,
 } from 'react-native';
 import {TabView, TabBar} from 'react-native-tab-view';
 import SearchBar from './SearchBar';
@@ -15,11 +14,18 @@ import FastImage from 'react-native-fast-image';
 import {useNavigation} from '@react-navigation/native';
 import TabScene from './TabScene';
 import LanguageSwitcher from './LanguageSwitcher';
+import Item from '../Screens/Achievement/Detail/Item';
 
 const TabBarHeight = 50;
 const HeaderHeight = 300;
 
-const TabBarCollapsible = ({achievements, loading, routes, handleQuery}) => {
+const TabBarCollapsible = ({
+  data,
+  loading,
+  routes,
+  handleQuery,
+  headerName,
+}) => {
   const [tabIndex, setIndex] = useState(0);
   const scrollY = useRef(new Animated.Value(0)).current;
   let listRefArr = useRef([]);
@@ -90,16 +96,37 @@ const TabBarCollapsible = ({achievements, loading, routes, handleQuery}) => {
     syncScrollOffset();
   };
 
-  const renderHeader = () => (
-    <>
-      <SearchBar
-        handleQuery={handleQuery}
-        scrollY={scrollY}
-        headerHeight={HeaderHeight}
-      />
-      {/* <LanguageSwitcher language={language} setLanguage={setLanguage} /> */}
-    </>
-  );
+  const renderHeader = () => {
+    switch (headerName) {
+      case 'SearchBar':
+        return (
+          <SearchBar
+            handleQuery={handleQuery}
+            scrollY={scrollY}
+            headerHeight={HeaderHeight}
+          />
+        );
+      case 'Details':
+        return (
+          <>
+            <View
+              style={{
+                top: 0,
+                height: 200,
+                width: '100%',
+                // backgroundColor: '#40C4FF',
+                // alignItems: 'center',
+                // justifyContent: 'center',
+                position: 'absolute',
+              }}>
+              <Item item={data.item} language={data.language} />
+            </View>
+          </>
+        );
+      default:
+        return null;
+    }
+  };
 
   const renderTabBar = props => {
     const y = scrollY.interpolate({
@@ -198,15 +225,21 @@ const TabBarCollapsible = ({achievements, loading, routes, handleQuery}) => {
       );
     }
 
-    const filteredAchievements =
-      route.key === 'all'
-        ? achievements || []
-        : (achievements || []).filter(ach => ach.category === route.key);
+    let filteredData;
+    if (headerName === 'SearchBar') {
+      filteredData =
+        route.key === 'all'
+          ? data || []
+          : (data || []).filter(ach => ach.category === route.key);
+    } else {
+      filteredData = data;
+    }
 
     return (
       <TabScene
+        headerName={headerName}
         numCols={numCols}
-        data={filteredAchievements}
+        data={filteredData}
         renderItem={renderItem}
         scrollY={scrollY}
         onMomentumScrollBegin={onMomentumScrollBegin}
