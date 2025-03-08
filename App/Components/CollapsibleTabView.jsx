@@ -211,19 +211,21 @@ const TabBarCollapsible = ({
     </Text>
   );
 
-  const renderScene = ({route}) => {
-    const numCols = 3;
-
+  const isLoading = () => {
     if (loading) {
       console.log('loading fired----->', loading);
       return (
         <ActivityIndicator
-          style={{padding: 100}}
+          style={{paddingBottom: 300}}
           size="large"
           color="#e91e63"
         />
       );
     }
+  };
+
+  const renderScene = ({route}) => {
+    const numCols = 3;
 
     let filteredData;
     if (headerName === 'SearchBar') {
@@ -271,6 +273,7 @@ const TabBarCollapsible = ({
     <View style={{flex: 1}}>
       {renderTabView()}
       {renderHeader()}
+      {isLoading()}
     </View>
   );
 };
