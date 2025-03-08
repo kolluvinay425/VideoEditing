@@ -15,7 +15,7 @@ const {width} = Dimensions.get('window');
 import Requirement from './RequirementScreen';
 import TipsScreen from './TipsAndTricks';
 import FastImage from 'react-native-fast-image';
-import TabBarCollapsible from '../../../Components/CollapsibleTabView';
+import TabBarCollapsibleDetail from '../../../Components/CollapsibleTabViewDetail';
 import Item from './Item';
 const ItemDetails = ({route}) => {
   const {item, language} = route.params;
@@ -25,19 +25,10 @@ const ItemDetails = ({route}) => {
     {key: 'tips', title: 'Tips'},
   ]);
 
-  const renderScene = SceneMap({
-    info: () => <Requirement language={language} item={item} />,
-    tips: () => <TipsScreen language={language} item={item} />,
-  });
-
   return (
     <>
       <GradientBackground>
-        <TabBarCollapsible
-          routes={routes}
-          data={route.params}
-          headerName="Details"
-        />
+        <TabBarCollapsibleDetail routes={routes} data={route.params} />
       </GradientBackground>
     </>
   );

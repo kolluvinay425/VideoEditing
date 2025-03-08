@@ -21,16 +21,12 @@ import TipsScreen from '../Screens/Achievement/Detail/TipsAndTricks';
 const TabBarHeight = 50;
 const HeaderHeight = 150;
 
-const TabBarCollapsible = ({achievements, loading, routes, handleQuery}) => {
+const TabBarCollapsibleDetail = ({loading, routes, data, handleQuery}) => {
   const [tabIndex, setIndex] = useState(0);
   const scrollY = useRef(new Animated.Value(0)).current;
   let listRefArr = useRef([]);
   let listOffset = useRef({});
   let isListGliding = useRef(false);
-  const navigation = useNavigation();
-  const [loadingLanguage, setLoadingLanguage] = useState(false);
-
-  const [language, setLanguage] = useState('en'); // Default language is English
 
   //   const handleLanguageChange = lang => {
   //     setLoadingLanguage(true); // Start loading effect
@@ -140,52 +136,47 @@ const TabBarCollapsible = ({achievements, loading, routes, handleQuery}) => {
     );
   };
 
-  const renderSceneDetail = useCallback(
-    ({route}) => {
-      const renderItem = () => {
-        if (route.key === 'info' && data) {
-          return (
-            <RequirementScreen language={data.language} item={data.item} />
-          );
-        } else if (route.key === 'tips' && data) {
-          return <TipsScreen language={data.language} item={data.item} />;
-        }
-        return <View style={{height: 10}} />;
-      };
+  const renderSceneDetail = ({route}) => {
+    const renderItem = () => {
+      if (route.key === 'info' && data) {
+        return <RequirementScreen language={data.language} item={data.item} />;
+      } else if (route.key === 'tips' && data) {
+        return <TipsScreen language={data.language} item={data.item} />;
+      }
+      return <View style={{height: 10}} />;
+    };
 
-      return (
-        <Animated.FlatList
-          data={[{key: 'content'}]} // Ensuring FlatList has valid data
-          keyExtractor={item => item.key}
-          scrollEventThrottle={16}
-          onScroll={Animated.event(
-            [{nativeEvent: {contentOffset: {y: scrollY}}}],
-            {
-              useNativeDriver: true,
-            },
-          )}
-          ref={ref => {
-            if (ref) {
-              const found = listRefArr.current.find(e => e.key === route.key);
-              if (!found) {
-                listRefArr.current.push({key: route.key, value: ref});
-              }
+    return (
+      <Animated.FlatList
+        data={[{key: 'content'}]} // Ensuring FlatList has valid data
+        keyExtractor={item => item.key}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{nativeEvent: {contentOffset: {y: scrollY}}}],
+          {
+            useNativeDriver: true,
+          },
+        )}
+        ref={ref => {
+          if (ref) {
+            const found = listRefArr.current.find(e => e.key === route.key);
+            if (!found) {
+              listRefArr.current.push({key: route.key, value: ref});
             }
-          }}
-          onMomentumScrollBegin={onMomentumScrollBegin}
-          onScrollEndDrag={onScrollEndDrag}
-          onMomentumScrollEnd={onMomentumScrollEnd}
-          contentContainerStyle={{
-            paddingTop: HeaderHeight + TabBarHeight,
-            paddingHorizontal: 10,
-          }}
-          showsVerticalScrollIndicator={false}
-          renderItem={renderItem}
-        />
-      );
-    },
-    [data, HeaderHeight],
-  );
+          }
+        }}
+        onMomentumScrollBegin={onMomentumScrollBegin}
+        onScrollEndDrag={onScrollEndDrag}
+        onMomentumScrollEnd={onMomentumScrollEnd}
+        contentContainerStyle={{
+          paddingTop: HeaderHeight + TabBarHeight,
+          paddingHorizontal: 10,
+        }}
+        showsVerticalScrollIndicator={false}
+        renderItem={renderItem}
+      />
+    );
+  };
 
   const renderLabel = ({route, focused}) => (
     <Text style={[styles.label, {opacity: focused ? 1 : 2}]}>
@@ -308,4 +299,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TabBarCollapsible;
+export default TabBarCollapsibleDetail;
