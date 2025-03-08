@@ -230,7 +230,7 @@ const TabBarCollapsible = ({achievements, loading, routes, handleQuery}) => {
       navigationState={{index: tabIndex, routes}}
       renderScene={renderScene}
       renderTabBar={renderTabBar}
-      initialLayout={{height: 0, width: Dimensions.get('window').width}}
+      //   initialLayout={{height: 0, width: Dimensions.get('window').width}}
     />
   );
 
