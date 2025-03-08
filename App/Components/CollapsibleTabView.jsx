@@ -192,6 +192,19 @@ const TabBarCollapsible = ({achievements, loading, handleQuery}) => {
     );
   };
 
+  const isLoading = () => {
+    if (loading) {
+      console.log('loading fired----->', loading);
+      return (
+        <ActivityIndicator
+          style={{paddingBottom: 300}}
+          size="large"
+          color="#e91e63"
+        />
+      );
+    }
+  };
+
   const renderLabel = ({route, focused}) => (
     <Text style={[styles.label, {opacity: focused ? 1 : 2}]}>
       {route.title}
@@ -252,6 +265,7 @@ const TabBarCollapsible = ({achievements, loading, handleQuery}) => {
     <View style={{flex: 1}}>
       {renderTabView()}
       {renderHeader()}
+      {isLoading()}
     </View>
   );
 };
