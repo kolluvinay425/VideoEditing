@@ -19,8 +19,18 @@ import LanguageSwitcher from './LanguageSwitcher';
 const TabBarHeight = 50;
 const HeaderHeight = 300;
 
-const TabBarCollapsible = ({achievements, loading, routes, handleQuery}) => {
-  const [tabIndex, setIndex] = useState(0);
+const TabBarCollapsible = ({achievements, loading, handleQuery}) => {
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    {key: 'all', title: 'All'},
+    {key: 'glorious_moments', title: 'Glorious Moments'},
+    {key: 'matches', title: 'Matches'},
+    {key: 'honor', title: 'Honor'},
+    {key: 'progress', title: 'Progress'},
+    {key: 'items', title: 'Items'},
+    {key: 'social', title: 'Social'},
+    {key: 'general', title: 'General'},
+  ]);
   const scrollY = useRef(new Animated.Value(0)).current;
   let listRefArr = useRef([]);
   let listOffset = useRef({});
@@ -39,16 +49,16 @@ const TabBarCollapsible = ({achievements, loading, routes, handleQuery}) => {
   //   };
   useEffect(() => {
     scrollY.addListener(({value}) => {
-      const curRoute = routes[tabIndex].key;
+      const curRoute = routes[index].key;
       listOffset.current[curRoute] = value;
     });
     return () => {
       scrollY.removeAllListeners();
     };
-  }, [routes, tabIndex]);
+  }, [routes, index]);
 
   const syncScrollOffset = () => {
-    const curRouteKey = routes[tabIndex].key;
+    const curRouteKey = routes[index].key;
     listRefArr.current.forEach(item => {
       if (item.key !== curRouteKey) {
         if (scrollY._value < HeaderHeight && scrollY._value >= 0) {
@@ -227,7 +237,7 @@ const TabBarCollapsible = ({achievements, loading, routes, handleQuery}) => {
   const renderTabView = () => (
     <TabView
       onIndexChange={index => setIndex(index)}
-      navigationState={{index: tabIndex, routes}}
+      navigationState={{index, routes}}
       renderScene={renderScene}
       renderTabBar={renderTabBar}
       initialLayout={{height: 0, width: Dimensions.get('window').width}}
