@@ -21,7 +21,14 @@ import TipsScreen from '../Screens/Achievement/Detail/TipsAndTricks';
 const TabBarHeight = 50;
 const HeaderHeight = 150;
 
-const TabBarCollapsibleDetail = ({loading, routes, data, handleQuery}) => {
+const TabBarCollapsibleDetail = ({
+  loading,
+  routes,
+  data,
+  onIndexChange,
+  indexD,
+  handleQuery,
+}) => {
   const [tabIndex, setIndex] = useState(0);
   const scrollY = useRef(new Animated.Value(0)).current;
   let listRefArr = useRef([]);
@@ -226,8 +233,8 @@ const TabBarCollapsibleDetail = ({loading, routes, data, handleQuery}) => {
 
   const renderTabView = () => (
     <TabView
-      onIndexChange={index => setIndex(index)}
-      navigationState={{index: tabIndex, routes}}
+      onIndexChange={onIndexChange}
+      navigationState={{indexD, routes}}
       renderScene={renderSceneDetail}
       renderTabBar={renderTabBar}
       initialLayout={{height: 0, width: Dimensions.get('window').width}}

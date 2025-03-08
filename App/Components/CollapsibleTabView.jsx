@@ -226,11 +226,11 @@ const TabBarCollapsible = ({achievements, loading, routes, handleQuery}) => {
 
   const renderTabView = () => (
     <TabView
-      onIndexChange={index => setIndex(index)}
-      navigationState={{index: tabIndex, routes}}
+      onIndexChange={onIndexChange}
+      navigationState={{indexA, routes}}
       renderScene={renderScene}
       renderTabBar={renderTabBar}
-      //   initialLayout={{height: 0, width: Dimensions.get('window').width}}
+      initialLayout={{height: 0, width: Dimensions.get('window').width}}
     />
   );
 

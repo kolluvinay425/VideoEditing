@@ -28,7 +28,12 @@ const ItemDetails = ({route}) => {
   return (
     <>
       <GradientBackground>
-        <TabBarCollapsibleDetail routes={routes} data={route.params} />
+        <TabBarCollapsibleDetail
+          index={index}
+          onIndexChange={setIndex}
+          routes={routes}
+          data={route.params}
+        />
       </GradientBackground>
     </>
   );
