@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
 import {
   StyleSheet,
   View,
@@ -15,7 +15,9 @@ import FastImage from 'react-native-fast-image';
 import {useNavigation} from '@react-navigation/native';
 import TabScene from './TabScene';
 import LanguageSwitcher from './LanguageSwitcher';
-
+import Item from '../Screens/Achievement/Detail/Item';
+import RequirementScreen from '../Screens/Achievement/Detail/RequirementScreen';
+import TipsScreen from '../Screens/Achievement/Detail/TipsAndTricks';
 const TabBarHeight = 50;
 const HeaderHeight = 150;
 
@@ -92,19 +94,19 @@ const TabBarCollapsible = ({achievements, loading, routes, handleQuery}) => {
 
   const renderHeader = () => (
     <>
-      <SearchBar
-        handleQuery={handleQuery}
+      <Item
+        item={data.item}
+        language={data.language}
         scrollY={scrollY}
         headerHeight={HeaderHeight}
       />
-      {/* <LanguageSwitcher language={language} setLanguage={setLanguage} /> */}
     </>
   );
 
   const renderTabBar = props => {
     const y = scrollY.interpolate({
       inputRange: [0, 1, HeaderHeight],
-      outputRange: [0, 0, -HeaderHeight + 150],
+      outputRange: [0, 0, -HeaderHeight],
       extrapolateRight: 'clamp',
     });
 
@@ -138,45 +140,52 @@ const TabBarCollapsible = ({achievements, loading, routes, handleQuery}) => {
     );
   };
 
-  const renderItem = ({item}) => {
-    if (loading) {
-      console.log('loading fired----->', loading);
+  const renderSceneDetail = useCallback(
+    ({route}) => {
+      const renderItem = () => {
+        if (route.key === 'info' && data) {
+          return (
+            <RequirementScreen language={data.language} item={data.item} />
+          );
+        } else if (route.key === 'tips' && data) {
+          return <TipsScreen language={data.language} item={data.item} />;
+        }
+        return <View style={{height: 10}} />;
+      };
+
       return (
-        <ActivityIndicator
-          style={{padding: 100}}
-          size="large"
-          color="#e91e63"
+        <Animated.FlatList
+          data={[{key: 'content'}]} // Ensuring FlatList has valid data
+          keyExtractor={item => item.key}
+          scrollEventThrottle={16}
+          onScroll={Animated.event(
+            [{nativeEvent: {contentOffset: {y: scrollY}}}],
+            {
+              useNativeDriver: true,
+            },
+          )}
+          ref={ref => {
+            if (ref) {
+              const found = listRefArr.current.find(e => e.key === route.key);
+              if (!found) {
+                listRefArr.current.push({key: route.key, value: ref});
+              }
+            }
+          }}
+          onMomentumScrollBegin={onMomentumScrollBegin}
+          onScrollEndDrag={onScrollEndDrag}
+          onMomentumScrollEnd={onMomentumScrollEnd}
+          contentContainerStyle={{
+            paddingTop: HeaderHeight + TabBarHeight,
+            paddingHorizontal: 10,
+          }}
+          showsVerticalScrollIndicator={false}
+          renderItem={renderItem}
         />
       );
-    }
-    console.log('loading fired----->', loading);
-    return (
-      <>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('ItemDetails', {item, language})}
-          style={styles.itemContainer}>
-          <FastImage
-            source={{
-              uri: 'https://res.cloudinary.com/vny/image/upload/v1739896428/AchievementSkeliton_l2dkqc.png',
-            }}
-            style={{width: 60, height: 50}}
-          />
-          <Text style={styles.itemText} numberOfLines={1} ellipsizeMode="tail">
-            {item.name[language]}
-          </Text>
-          <View style={styles.inlineContainer}>
-            <FastImage
-              source={{
-                uri: 'https://res.cloudinary.com/vny/image/upload/v1739961906/points_vhi3dv.png',
-              }}
-              style={styles.inlineImage}
-            />
-            <Text style={styles.itemText}>{item.points}</Text>
-          </View>
-        </TouchableOpacity>
-      </>
-    );
-  };
+    },
+    [data, HeaderHeight],
+  );
 
   const renderLabel = ({route, focused}) => (
     <Text style={[styles.label, {opacity: focused ? 1 : 2}]}>
@@ -228,7 +237,7 @@ const TabBarCollapsible = ({achievements, loading, routes, handleQuery}) => {
     <TabView
       onIndexChange={index => setIndex(index)}
       navigationState={{index: tabIndex, routes}}
-      renderScene={renderScene}
+      renderScene={renderSceneDetail}
       renderTabBar={renderTabBar}
       initialLayout={{height: 0, width: Dimensions.get('window').width}}
     />
