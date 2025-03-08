@@ -162,15 +162,19 @@ const TabBarCollapsible = ({achievements, loading, handleQuery}) => {
     console.log('loading fired----->', loading);
     return (
       <>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('ItemDetails', {item, language})}
-          style={styles.itemContainer}>
-          <FastImage
-            source={{
-              uri: 'https://res.cloudinary.com/vny/image/upload/v1739896428/AchievementSkeliton_l2dkqc.png',
-            }}
-            style={{width: 60, height: 50}}
-          />
+        <View style={styles.itemContainer}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('ItemDetails', {item, language})
+            }>
+            <FastImage
+              source={{
+                uri: 'https://res.cloudinary.com/vny/image/upload/v1739896428/AchievementSkeliton_l2dkqc.png',
+              }}
+              style={{width: 60, height: 50}}
+            />
+          </TouchableOpacity>
+
           <Text style={styles.itemText} numberOfLines={1} ellipsizeMode="tail">
             {item.name[language]}
           </Text>
@@ -183,7 +187,7 @@ const TabBarCollapsible = ({achievements, loading, handleQuery}) => {
             />
             <Text style={styles.itemText}>{item.points}</Text>
           </View>
-        </TouchableOpacity>
+        </View>
       </>
     );
   };
