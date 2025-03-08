@@ -149,17 +149,6 @@ const TabBarCollapsible = ({achievements, loading, handleQuery}) => {
   };
 
   const renderItem = ({item}) => {
-    if (loading) {
-      console.log('loading fired----->', loading);
-      return (
-        <ActivityIndicator
-          style={{padding: 100}}
-          size="large"
-          color="#e91e63"
-        />
-      );
-    }
-    console.log('loading fired----->', loading);
     return (
       <>
         <View style={styles.itemContainer}>
@@ -213,17 +202,6 @@ const TabBarCollapsible = ({achievements, loading, handleQuery}) => {
 
   const renderScene = ({route}) => {
     const numCols = 3;
-
-    if (loading) {
-      console.log('loading fired----->', loading);
-      return (
-        <ActivityIndicator
-          style={{padding: 100}}
-          size="large"
-          color="#e91e63"
-        />
-      );
-    }
 
     const filteredAchievements =
       route.key === 'all'
