@@ -15,7 +15,8 @@ const {width} = Dimensions.get('window');
 import Requirement from './RequirementScreen';
 import TipsScreen from './TipsAndTricks';
 import FastImage from 'react-native-fast-image';
-
+import TabBarCollapsible from '../../../Components/CollapsibleTabView';
+import Item from './Item';
 const ItemDetails = ({route}) => {
   const {item, language} = route.params;
   const [index, setIndex] = useState(0);
@@ -32,45 +33,10 @@ const ItemDetails = ({route}) => {
   return (
     <>
       <GradientBackground>
-        <View style={styles.headerContainer}>
-          <View style={styles.header1}>
-            <FastImage
-              source={images.achievement}
-              style={styles.achievementImage}
-            />
-            <Text style={styles.text1}>{item.name[language]}</Text>
-          </View>
-
-          <View style={styles.header2}>
-            <Text style={styles.text2}>
-              Hardness: {item.hardness[language]}
-            </Text>
-            <View style={styles.inlineContainer}>
-              <Text style={styles.text2}>
-                Achievement points: {item.points}
-              </Text>
-              <Image
-                source={images.pointsIcon}
-                style={styles.inlineImageSmall}
-              />
-            </View>
-            {item.rewards.title && (
-              <View style={styles.inlineContainer}>
-                <Text style={styles.text2}>Title</Text>
-                <Image
-                  source={{uri: item.rewards.titleImage}}
-                  style={styles.inlineImageLarge}
-                />
-              </View>
-            )}
-          </View>
-        </View>
-
-        <ReusableTabView
+        <TabBarCollapsible
           routes={routes}
-          renderScene={renderScene}
-          index={index}
-          onIndexChange={setIndex}
+          data={route.params}
+          headerName="Details"
         />
       </GradientBackground>
     </>
