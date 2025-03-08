@@ -22,6 +22,7 @@ const App = () => {
           `https://pubg-guides.onrender.com/api/achievements/all?name=${query}`,
         );
         const data = await response.json();
+        console.log(data.achievements);
         setAchievements(data.achievements);
       } catch (error) {
         console.error('Error fetching achievements:', error);

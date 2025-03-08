@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useCallback, useMemo} from 'react';
 import {
   StyleSheet,
   View,
@@ -8,17 +8,18 @@ import {
   ActivityIndicator,
   Animated,
 } from 'react-native';
-import {TabView, TabBar} from 'react-native-tab-view';
+import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import SearchBar from './SearchBar';
 import FastImage from 'react-native-fast-image';
 import {useNavigation} from '@react-navigation/native';
 import TabScene from './TabScene';
 import LanguageSwitcher from './LanguageSwitcher';
 import Item from '../Screens/Achievement/Detail/Item';
+import RequirementScreen from '../Screens/Achievement/Detail/RequirementScreen';
+import TipsScreen from '../Screens/Achievement/Detail/TipsAndTricks';
 
+let HeaderHeight;
 const TabBarHeight = 50;
-const HeaderHeight = 300;
-
 const TabBarCollapsible = ({
   data,
   loading,
@@ -35,6 +36,17 @@ const TabBarCollapsible = ({
   const [loadingLanguage, setLoadingLanguage] = useState(false);
 
   const [language, setLanguage] = useState('en'); // Default language is English
+
+  switch (headerName) {
+    case 'SearchBar':
+      HeaderHeight = 300;
+      break;
+    case 'Details':
+      HeaderHeight = 150;
+      break;
+    default:
+      break;
+  }
 
   //   const handleLanguageChange = lang => {
   //     setLoadingLanguage(true); // Start loading effect
@@ -53,35 +65,18 @@ const TabBarCollapsible = ({
     };
   }, [routes, tabIndex]);
 
-  const syncScrollOffset = () => {
-    const curRouteKey = routes[tabIndex].key;
-    listRefArr.current.forEach(item => {
-      if (item.key !== curRouteKey) {
-        if (scrollY._value < HeaderHeight && scrollY._value >= 0) {
-          if (item.value) {
-            item.value.scrollToOffset({
-              offset: scrollY._value,
-              animated: false,
-            });
-            listOffset.current[item.key] = scrollY._value;
-          }
-        } else if (scrollY._value >= HeaderHeight) {
-          if (
-            listOffset.current[item.key] < HeaderHeight ||
-            listOffset.current[item.key] == null
-          ) {
-            if (item.value) {
-              item.value.scrollToOffset({
-                offset: HeaderHeight,
-                animated: false,
-              });
-              listOffset.current[item.key] = HeaderHeight;
-            }
-          }
+  const syncScrollOffset = useCallback(() => {
+    const curRouteKey = routes[tabIndex]?.key;
+    listRefArr.current.forEach(({key, value}) => {
+      if (key !== curRouteKey && value) {
+        const offset = Math.min(HeaderHeight, Math.max(0, scrollY.current));
+        if (listOffset.current[key] !== offset) {
+          value.scrollToOffset({offset, animated: false});
+          listOffset.current[key] = offset;
         }
       }
     });
-  };
+  }, [HeaderHeight, routes, tabIndex]);
 
   const onMomentumScrollBegin = () => {
     isListGliding.current = true;
@@ -92,79 +87,62 @@ const TabBarCollapsible = ({
     syncScrollOffset();
   };
 
-  const onScrollEndDrag = () => {
-    syncScrollOffset();
-  };
+  const onScrollEndDrag = syncScrollOffset;
 
-  const renderHeader = () => {
-    switch (headerName) {
-      case 'SearchBar':
-        return (
-          <SearchBar
-            handleQuery={handleQuery}
-            scrollY={scrollY}
-            headerHeight={HeaderHeight}
-          />
-        );
-      case 'Details':
-        return (
-          <>
-            <View
-              style={{
-                top: 0,
-                height: 200,
-                width: '100%',
-                // backgroundColor: '#40C4FF',
-                // alignItems: 'center',
-                // justifyContent: 'center',
-                position: 'absolute',
-              }}>
-              <Item item={data.item} language={data.language} />
-            </View>
-          </>
-        );
-      default:
-        return null;
+  const renderHeader = useMemo(() => {
+    if (headerName === 'SearchBar') {
+      return (
+        <SearchBar
+          handleQuery={handleQuery}
+          scrollY={scrollY}
+          headerHeight={HeaderHeight}
+        />
+      );
     }
-  };
+    if (headerName === 'Details') {
+      return (
+        <Item
+          item={data?.item}
+          language={data?.language}
+          scrollY={scrollY}
+          headerHeight={HeaderHeight}
+        />
+      );
+    }
+    return null;
+  }, [headerName, data, handleQuery, HeaderHeight]);
 
-  const renderTabBar = props => {
-    const y = scrollY.interpolate({
-      inputRange: [0, 1, HeaderHeight],
-      outputRange: [0, 0, -HeaderHeight + 150],
-      extrapolateRight: 'clamp',
-    });
+  const renderTabBar = useCallback(
+    props => {
+      const y = scrollY.interpolate({
+        inputRange: [0, HeaderHeight],
+        outputRange: [0, -HeaderHeight],
+        extrapolate: 'clamp',
+      });
 
-    return (
-      <>
+      return (
         <Animated.View
-          style={{
-            zIndex: 1,
-            position: 'absolute',
-            top: HeaderHeight,
-            transform: [{translateY: y}],
-            width: '100%',
-          }}>
+          style={[styles.tabBarContainer, {transform: [{translateY: y}]}]}>
           <TabBar
             {...props}
-            onTabPress={({route, preventDefault}) => {
-              if (isListGliding.current) {
-                preventDefault();
-              }
-            }}
+            onTabPress={({preventDefault}) =>
+              isListGliding.current && preventDefault()
+            }
             labelStyle={styles.label}
             tabStyle={styles.tabStyle}
             style={styles.tab}
-            renderLabel={renderLabel}
+            renderLabel={({route, focused}) => (
+              <Text style={[styles.label, {opacity: focused ? 1 : 0.6}]}>
+                {route.title}
+              </Text>
+            )}
             indicatorStyle={styles.indicator}
-            activeColor="#ffffff"
-            inactiveColor="#f0e9e9"
           />
         </Animated.View>
-      </>
-    );
-  };
-
+      );
+    },
+    [scrollY, HeaderHeight],
+  );
   const renderItem = ({item}) => {
     if (loading) {
       console.log('loading fired----->', loading);
@@ -203,7 +181,7 @@ const TabBarCollapsible = ({
         </TouchableOpacity>
       </>
     );
-  };
+  }; //Achievements
 
   const renderLabel = ({route, focused}) => (
     <Text style={[styles.label, {opacity: focused ? 1 : 2}]}>
@@ -224,40 +202,90 @@ const TabBarCollapsible = ({
     }
   };
 
-  const renderScene = ({route}) => {
-    const numCols = 3;
+  const renderSceneAchievement = useCallback(
+    ({route}) => {
+      const filteredData =
+        headerName === 'SearchBar'
+          ? route.key === 'all'
+            ? data || []
+            : (data || []).filter(ach => ach.category === route.key)
+          : data;
 
-    let filteredData;
-    if (headerName === 'SearchBar') {
-      filteredData =
-        route.key === 'all'
-          ? data || []
-          : (data || []).filter(ach => ach.category === route.key);
-    } else {
-      filteredData = data;
-    }
-
-    return (
-      <TabScene
-        headerName={headerName}
-        numCols={numCols}
-        data={filteredData}
-        renderItem={renderItem}
-        scrollY={scrollY}
-        onMomentumScrollBegin={onMomentumScrollBegin}
-        onScrollEndDrag={onScrollEndDrag}
-        onMomentumScrollEnd={onMomentumScrollEnd}
-        onGetRef={ref => {
-          if (ref) {
-            const found = listRefArr.current.find(e => e.key === route.key);
-            if (!found) {
+      return (
+        <Animated.FlatList
+          data={filteredData}
+          keyExtractor={(item, index) => index.toString()}
+          numColumns={3}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          removeClippedSubviews={true}
+          getItemLayout={(data, index) => ({
+            length: 100,
+            offset: 100 * index,
+            index,
+          })}
+          ref={ref => {
+            if (ref && !listRefArr.current.some(e => e.key === route.key)) {
               listRefArr.current.push({key: route.key, value: ref});
             }
-          }
-        }}
-      />
-    );
-  };
+          }}
+          scrollEventThrottle={16}
+          onScroll={Animated.event(
+            [{nativeEvent: {contentOffset: {y: scrollY}}}],
+            {
+              useNativeDriver: true,
+            },
+          )}
+          onMomentumScrollBegin={onMomentumScrollBegin}
+          onMomentumScrollEnd={onMomentumScrollEnd}
+          onScrollEndDrag={onScrollEndDrag}
+          contentContainerStyle={{paddingTop: HeaderHeight + TabBarHeight}}
+          renderItem={({item}) => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ItemDetails', {item})}
+              style={styles.itemContainer}>
+              <FastImage source={{uri: item.imageUrl}} style={styles.image} />
+              <Text style={styles.itemText} numberOfLines={1}>
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          )}
+        />
+      );
+    },
+    [data, headerName, HeaderHeight],
+  );
+
+  const renderSceneDetail = useCallback(
+    ({route}) => {
+      const content =
+        route.key === 'info' ? (
+          <RequirementScreen language={data?.language} item={data?.item} />
+        ) : (
+          <TipsScreen language={data?.language} item={data?.item} />
+        );
+
+      return (
+        <Animated.FlatList
+          data={[{key: 'content'}]}
+          keyExtractor={item => item.key}
+          scrollEventThrottle={16}
+          onScroll={Animated.event(
+            [{nativeEvent: {contentOffset: {y: scrollY}}}],
+            {
+              useNativeDriver: true,
+            },
+          )}
+          contentContainerStyle={{paddingTop: HeaderHeight + TabBarHeight}}
+          renderItem={() => content}
+        />
+      );
+    },
+    [data, HeaderHeight],
+  );
+
+  const renderScene =
+    headerName === 'SearchBar' ? renderSceneAchievement : renderSceneDetail;
 
   const renderTabView = () => (
     <TabView
@@ -272,7 +300,7 @@ const TabBarCollapsible = ({
   return (
     <View style={{flex: 1}}>
       {renderTabView()}
-      {renderHeader()}
+      {renderHeader}
       {isLoading()}
     </View>
   );

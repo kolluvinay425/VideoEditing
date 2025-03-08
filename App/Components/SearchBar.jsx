@@ -36,7 +36,7 @@ const SearchBar = ({handleQuery, scrollY, headerHeight}) => {
 
   const textOpacity = scrollY.interpolate({
     inputRange: [0, 100],
-    outputRange: [1, 0], // Fades out text
+    outputRange: [1, 0], // Fades out textrenderTabBar
     extrapolate: 'clamp',
   });
 

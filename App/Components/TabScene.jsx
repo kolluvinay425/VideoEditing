@@ -45,9 +45,27 @@ const TabScene = ({
     />
   );
   // } else {
-  //   console.log('im an item ???-------->', data.language);
-
-  //   // <Item item={data.item} />;
+  //   return (
+  //     <Animated.ScrollView
+  //       ref={onGetRef}
+  //       scrollEventThrottle={16}
+  //       onScroll={Animated.event(
+  //         [{nativeEvent: {contentOffset: {y: scrollY}}}],
+  //         {useNativeDriver: true},
+  //       )}
+  //       onMomentumScrollBegin={onMomentumScrollBegin}
+  //       onScrollEndDrag={onScrollEndDrag}
+  //       onMomentumScrollEnd={onMomentumScrollEnd}
+  //       contentContainerStyle={{
+  //         paddingTop: HeaderHeight + TabBarHeight,
+  //         paddingBottom: 20,
+  //       }}
+  //       showsVerticalScrollIndicator={false}>
+  //       <View style={{height: 10}} />
+  //       <Item item={data} />
+  //       <View style={{height: 10}} />
+  //     </Animated.ScrollView>
+  //   );
   // }
 };
 

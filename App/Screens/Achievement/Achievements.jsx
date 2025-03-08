@@ -4,6 +4,7 @@ import TabBarCollapsible from '../../Components/CollapsibleTabView';
 import {SearchBar} from 'react-native-screens';
 
 const Achievements = ({achievements, loading, handleQuery}) => {
+  console.log('achss-------->', achievements);
   const [routes] = useState([
     {key: 'all', title: 'All'},
     {key: 'glorious_moments', title: 'Glorious Moments'},
