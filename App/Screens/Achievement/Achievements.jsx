@@ -4,6 +4,7 @@ import GradientBackground from '../../Components/GradientBackground';
 import TabBarCollapsible from '../../Components/CollapsibleTabView';
 
 const Achievements = ({achievements, loading, handleQuery}) => {
+  const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'all', title: 'All'},
     {key: 'glorious_moments', title: 'Glorious Moments'},
@@ -23,6 +24,8 @@ const Achievements = ({achievements, loading, handleQuery}) => {
           achievements={achievements}
           loading={loading}
           handleQuery={handleQuery}
+          indexA={index}
+          onIndexChange={setIndex}
         />
       </GradientBackground>
     </>
