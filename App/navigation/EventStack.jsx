@@ -41,7 +41,7 @@ const screenOptions = navigation => ({
     <TouchableOpacity onPress={() => navigation.goBack()}>
       <MaterialCommunityIcons
         name="arrow-left"
-        size={24}
+        size={35}
         color="#e91e63"
         style={{marginLeft: 10}}
       />
@@ -51,7 +51,7 @@ const screenOptions = navigation => ({
     <TouchableOpacity onPress={() => alert('Favorites clicked!')}>
       <MaterialCommunityIcons
         name="heart"
-        size={24}
+        size={28}
         color="#e91e63"
         style={{marginRight: 10}}
       />

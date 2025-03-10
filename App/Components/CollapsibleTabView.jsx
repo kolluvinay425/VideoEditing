@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useCallback, memo} from 'react';
 import {
   StyleSheet,
   View,
@@ -15,11 +15,17 @@ import FastImage from 'react-native-fast-image';
 import {useNavigation} from '@react-navigation/native';
 import TabScene from './TabScene';
 import LanguageSwitcher from './LanguageSwitcher';
+import {MemoizedAchievementItem} from './AchievementItem';
 
 const TabBarHeight = 50;
 const HeaderHeight = 300;
 
-const TabBarCollapsible = ({achievements, loading, handleQuery}) => {
+const TabBarCollapsible = ({
+  achievements,
+  loading,
+  handleQuery,
+  handleEndReached,
+}) => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'all', title: 'All'},
@@ -86,17 +92,21 @@ const TabBarCollapsible = ({achievements, loading, handleQuery}) => {
       }
     });
   };
+  const [swiping, setSwiping] = useState(false);
 
   const onMomentumScrollBegin = () => {
     isListGliding.current = true;
+    console.log('scroll started------------->', isListGliding.current);
   };
 
   const onMomentumScrollEnd = () => {
     isListGliding.current = false;
+    console.log('scroll ended------------->', isListGliding.current);
     syncScrollOffset();
   };
 
   const onScrollEndDrag = () => {
+    isListGliding.current = false; // Reset gliding state on drag stop
     syncScrollOffset();
   };
 
@@ -142,27 +152,42 @@ const TabBarCollapsible = ({achievements, loading, handleQuery}) => {
             indicatorStyle={styles.indicator}
             activeColor="#ffffff"
             inactiveColor="#f0e9e9"
+            scrollEnabled
           />
         </Animated.View>
       </>
     );
   };
 
+  // const renderItem = useCallback(
+  //   ({item}) => (
+  //     <MemoizedAchievementItem
+  //       item={item}
+  //       navigation={navigation}
+  //       isListGliding={isListGliding}
+  //       swiping={swiping}
+  //       language={language}
+  //       HeaderHeight={HeaderHeight}
+  //     />
+  //   ),
+  //   [navigation, swiping, language],
+  // );
+
   const renderItem = ({item}) => {
     return (
       <>
-        <View style={styles.itemContainer}>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('ItemDetails', {item, language})
-            }>
-            <FastImage
-              source={{
-                uri: 'https://res.cloudinary.com/vny/image/upload/v1739896428/AchievementSkeliton_l2dkqc.png',
-              }}
-              style={{width: 60, height: 50}}
-            />
-          </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            !isListGliding.current &&
+            navigation.navigate('ItemDetails', {item, language})
+          }
+          style={styles.itemContainer}>
+          <FastImage
+            source={{
+              uri: 'https://res.cloudinary.com/vny/image/upload/v1739896428/AchievementSkeliton_l2dkqc.png',
+            }}
+            style={{width: 60, height: 50}}
+          />
 
           <Text style={styles.itemText} numberOfLines={1} ellipsizeMode="tail">
             {item.name[language]}
@@ -176,7 +201,7 @@ const TabBarCollapsible = ({achievements, loading, handleQuery}) => {
             />
             <Text style={styles.itemText}>{item.points}</Text>
           </View>
-        </View>
+        </TouchableOpacity>
       </>
     );
   };
@@ -225,13 +250,20 @@ const TabBarCollapsible = ({achievements, loading, handleQuery}) => {
             }
           }
         }}
+        handleEndReached={handleEndReached}
       />
     );
   };
 
   const renderTabView = () => (
     <TabView
-      onIndexChange={index => setIndex(index)}
+      onIndexChange={index => {
+        setIndex(index);
+        onMomentumScrollBegin();
+        setTimeout(() => {
+          onMomentumScrollEnd();
+        }, 2000); // Adjust delay based on tab transition duration
+      }}
       navigationState={{index, routes}}
       renderScene={renderScene}
       renderTabBar={renderTabBar}

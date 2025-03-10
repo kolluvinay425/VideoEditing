@@ -9,7 +9,12 @@ import images from '../themes/Images';
 
 const Tab = createMaterialBottomTabNavigator();
 
-const TabNavigator = ({achievements, loading, handleQuery}) => {
+const TabNavigator = ({
+  achievements,
+  loading,
+  handleQuery,
+  handleEndReached,
+}) => {
   return (
     <Tab.Navigator
       theme={{colors: {secondaryContainer: 'transparent'}}}
@@ -48,6 +53,7 @@ const TabNavigator = ({achievements, loading, handleQuery}) => {
             achievements={achievements}
             loading={loading}
             handleQuery={handleQuery}
+            handleEndReached={handleEndReached}
           />
         )}
       </Tab.Screen>

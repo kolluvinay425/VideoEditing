@@ -2,8 +2,14 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, Dimensions} from 'react-native';
 import GradientBackground from '../../Components/GradientBackground';
 import TabBarCollapsible from '../../Components/CollapsibleTabView';
+import CollapsibleTabViewExample from '../../Components/ExampleCollapsible';
 
-const Achievements = ({achievements, loading, handleQuery}) => {
+const Achievements = ({
+  achievements,
+  loading,
+  handleQuery,
+  handleEndReached,
+}) => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'all', title: 'All'},
@@ -26,7 +32,9 @@ const Achievements = ({achievements, loading, handleQuery}) => {
           handleQuery={handleQuery}
           indexA={index}
           onIndexChange={setIndex}
+          handleEndReached={handleEndReached}
         />
+        {/* <CollapsibleTabViewExample/> */}
       </GradientBackground>
     </>
   );

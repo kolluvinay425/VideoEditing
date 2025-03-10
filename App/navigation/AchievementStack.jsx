@@ -7,7 +7,12 @@ import ItemDetails from '../Screens/Achievement/Detail/ItemDetails';
 
 const Stack = createStackNavigator();
 
-const CreateAchievementRoutes = ({achievements, loading, handleQuery}) => {
+const CreateAchievementRoutes = ({
+  achievements,
+  loading,
+  handleQuery,
+  handleEndReached,
+}) => {
   return (
     <Stack.Navigator initialRouteName="Achievements">
       <Stack.Screen name="Achievements" options={{headerShown: false}}>
@@ -17,6 +22,7 @@ const CreateAchievementRoutes = ({achievements, loading, handleQuery}) => {
             achievements={achievements}
             handleQuery={handleQuery}
             loading={loading}
+            handleEndReached={handleEndReached}
           />
         )}
       </Stack.Screen>
@@ -28,7 +34,7 @@ const CreateAchievementRoutes = ({achievements, loading, handleQuery}) => {
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <MaterialCommunityIcons
                 name="arrow-left"
-                size={24}
+                size={35}
                 color="#e91e63"
                 style={{marginLeft: 10}}
               />
@@ -38,7 +44,7 @@ const CreateAchievementRoutes = ({achievements, loading, handleQuery}) => {
             <TouchableOpacity onPress={() => alert('Favorites clicked!')}>
               <MaterialCommunityIcons
                 name="heart"
-                size={24}
+                size={28}
                 color="#e91e63"
                 style={{marginRight: 10}}
               />

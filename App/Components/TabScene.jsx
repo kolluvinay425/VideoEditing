@@ -1,6 +1,7 @@
 import React from 'react';
-import {View, Dimensions, Animated, FlatList} from 'react-native';
-
+import {View, Dimensions, Animated} from 'react-native';
+import {useAchievement} from '../context/AchievementContext';
+const screenHeight = Dimensions.get('window').height;
 const TabBarHeight = 50;
 const HeaderHeight = 300;
 
@@ -15,6 +16,8 @@ const TabScene = ({
   onMomentumScrollBegin,
 }) => {
   const windowHeight = Dimensions.get('window').height;
+
+  const {achievements, handleEndReached} = useAchievement();
 
   return (
     <Animated.FlatList
@@ -31,13 +34,16 @@ const TabScene = ({
       ItemSeparatorComponent={() => <View style={{height: 10}} />}
       ListHeaderComponent={() => <View style={{height: 10}} />}
       contentContainerStyle={{
+        minHeight: screenHeight * 1.5, // Ensures a minimum scrollable height
         paddingTop: HeaderHeight + TabBarHeight,
       }}
       showsHorizontalScrollIndicator={false}
-      data={data}
+      data={achievements}
       renderItem={renderItem}
-      showsVerticalScrollIndicator={false}
-      keyExtractor={(item, index) => index.toString()}
+      showsVerticalScrollIndicator={true}
+      onEndReached={handleEndReached}
+      // keyExtractor={(item, index) => index.toString()}
+      keyExtractor={item => item.id.toString()} // or any unique identifier
     />
   );
 };
