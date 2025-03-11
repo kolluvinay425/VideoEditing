@@ -9,12 +9,7 @@ import images from '../themes/Images';
 
 const Tab = createMaterialBottomTabNavigator();
 
-const TabNavigator = ({
-  achievements,
-  loading,
-  handleQuery,
-  handleEndReached,
-}) => {
+const TabNavigator = () => {
   return (
     <Tab.Navigator
       theme={{colors: {secondaryContainer: 'transparent'}}}
@@ -47,15 +42,7 @@ const TabNavigator = ({
             <MaterialCommunityIcons name="trophy" color={color} size={26} />
           ),
         }}>
-        {props => (
-          <CreateAchievementRoutes
-            {...props}
-            achievements={achievements}
-            loading={loading}
-            handleQuery={handleQuery}
-            handleEndReached={handleEndReached}
-          />
-        )}
+        {props => <CreateAchievementRoutes {...props} />}
       </Tab.Screen>
       <Tab.Screen
         name="Events-Screen"

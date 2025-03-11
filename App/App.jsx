@@ -18,6 +18,7 @@ const App = () => {
   };
 
   useEffect(() => {
+    console.log('Fetching achievements before mounting...');
     const fetchAchievements = async () => {
       try {
         const response = await fetch(
@@ -25,7 +26,7 @@ const App = () => {
         );
         const data = await response.json();
         setAchievements(data.achievements);
-        setHasMore(data.achievements.length < data.count);
+        // setHasMore(data.length < data.count ? true : false);
       } catch (error) {
         console.error('Error fetching achievements:', error);
       } finally {
@@ -36,7 +37,7 @@ const App = () => {
   }, [query, limit]);
 
   const handleEndReached = () => {
-    if (hasMore && !loading) {
+    if (!loading) {
       setLimit(prevLimit => prevLimit + 10);
     }
   };
@@ -55,7 +56,12 @@ const App = () => {
             <View style={{position: 'absolute', bottom: 0, width: '100%'}}>
               <GradientBackground />
             </View>
-            <TabNavigator />
+            <TabNavigator
+              achievements={achievements}
+              loading={loading}
+              handleQuery={handleQuery}
+              handleEndReached={handleEndReached}
+            />
           </NavigationContainer>
         </GradientBackground>
       </SafeAreaProvider>

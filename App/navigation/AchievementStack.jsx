@@ -16,15 +16,7 @@ const CreateAchievementRoutes = ({
   return (
     <Stack.Navigator initialRouteName="Achievements">
       <Stack.Screen name="Achievements" options={{headerShown: false}}>
-        {props => (
-          <Achievements
-            {...props}
-            achievements={achievements}
-            handleQuery={handleQuery}
-            loading={loading}
-            handleEndReached={handleEndReached}
-          />
-        )}
+        {props => <Achievements {...props} />}
       </Stack.Screen>
       <Stack.Screen
         name="ItemDetails"

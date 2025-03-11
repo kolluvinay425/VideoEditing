@@ -15,17 +15,15 @@ import FastImage from 'react-native-fast-image';
 import {useNavigation} from '@react-navigation/native';
 import TabScene from './TabScene';
 import LanguageSwitcher from './LanguageSwitcher';
-import {MemoizedAchievementItem} from './AchievementItem';
+import {useAchievement} from '../context/AchievementContext';
 
 const TabBarHeight = 50;
 const HeaderHeight = 300;
 
-const TabBarCollapsible = ({
-  achievements,
-  loading,
-  handleQuery,
-  handleEndReached,
-}) => {
+const TabBarCollapsible = () => {
+  const {achievements, handleEndReached, loading, handleQuery} =
+    useAchievement();
+
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'all', title: 'All'},
@@ -232,7 +230,38 @@ const TabBarCollapsible = ({
       route.key === 'all'
         ? achievements || []
         : (achievements || []).filter(ach => ach.category === route.key);
+    // let filteredAchievements;
+    // switch (route.key) {
+    //   case 'all':
+    //     filteredAchievements = achievements;
+    //     break;
+    //   case 'glorious_moments':
+    //     filteredAchievements = achievements;
 
+    //   case 'matches':
+    //     filteredAchievements = achievements;
+
+    //     break;
+    //   case 'honor':
+    //     filteredAchievements = achievements;
+
+    //   case 'progress':
+    //     filteredAchievements = achievements;
+
+    //     break;
+    //   case 'items':
+    //     filteredAchievements = achievements;
+
+    //   case 'social':
+    //     filteredAchievements = achievements;
+
+    //     break;
+    //   case 'general':
+    //     filteredAchievements = achievements;
+
+    //   default:
+    //     return null;
+    // }
     return (
       <TabScene
         numCols={numCols}

@@ -7,17 +7,18 @@ const HeaderHeight = 300;
 
 const TabScene = ({
   numCols,
-  data,
   renderItem,
   onGetRef,
   scrollY,
   onScrollEndDrag,
   onMomentumScrollEnd,
   onMomentumScrollBegin,
+  data,
+  handleEndReached,
 }) => {
   const windowHeight = Dimensions.get('window').height;
 
-  const {achievements, handleEndReached} = useAchievement();
+  // const {achievements, handleEndReached} = useAchievement();
 
   return (
     <Animated.FlatList
@@ -38,7 +39,7 @@ const TabScene = ({
         paddingTop: HeaderHeight + TabBarHeight,
       }}
       showsHorizontalScrollIndicator={false}
-      data={achievements}
+      data={data}
       renderItem={renderItem}
       showsVerticalScrollIndicator={true}
       onEndReached={handleEndReached}
