@@ -1,4 +1,4 @@
-import {FETCH_ACHIEVEMENTS, SET_LIMIT} from '../actions/achievementActions';
+import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
   data: {
@@ -24,29 +24,25 @@ const initialState = {
   },
 };
 
-const achievementsReducer = (state = initialState, action) => {
-  const {type, payload} = action;
+const achievementsSlice = createSlice({
+  name: 'achievements', // Slice name
+  initialState,
+  reducers: {
+    fetchAchievements: (state, action) => {
+      const {category, data} = action.payload;
+      state.data[category] = data; // Update the category with the fetched data
+    },
+    setLimit: (state, action) => {
+      const {category, limit} = action.payload;
+      state.limits[category] = limit; // Update the limit for a category
+    },
+    setLoading: (state, action) => {
+      state.loading = action.payload; // Set the loading state
+    },
+  },
+});
 
-  switch (type) {
-    case FETCH_ACHIEVEMENTS:
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          [payload.category]: payload.data,
-        },
-      };
-    case SET_LIMIT:
-      return {
-        ...state,
-        limits: {
-          ...state.limits,
-          [payload.category]: payload.limit,
-        },
-      };
-    default:
-      return state;
-  }
-};
+export const {fetchAchievements, setLimit, setLoading} =
+  achievementsSlice.actions;
 
-export default achievementsReducer;
+export default achievementsSlice.reducer;
