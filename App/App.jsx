@@ -22,7 +22,7 @@ const App = () => {
     const fetchAchievements = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/achievements/all?name=${query}&limit=${limit}&`,
+          `https://pubg-guides.onrender.com/api/achievements/all?name=${query}&limit=${limit}&`,
         );
         const data = await response.json();
         setAchievements(data.achievements);

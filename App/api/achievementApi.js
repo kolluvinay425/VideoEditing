@@ -1,6 +1,6 @@
 // api/achievementApi.js
 
-const BASE_URL = 'https://pubg-guides.onrender.com/api/achievements/all';
+export const BASE_URL = 'https://pubg-guides.onrender.com/api/achievements/all';
 
 export const fetchAchievementsByCategory = async (query, limit, category) => {
   try {

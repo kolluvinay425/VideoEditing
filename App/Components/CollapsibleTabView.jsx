@@ -230,6 +230,8 @@ const TabBarCollapsible = () => {
       route.key === 'all'
         ? achievements || []
         : (achievements || []).filter(ach => ach.category === route.key);
+
+    console.log('---------------------------->', filteredAchievements);
     // let filteredAchievements;
     // switch (route.key) {
     //   case 'all':
