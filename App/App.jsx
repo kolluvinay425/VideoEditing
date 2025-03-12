@@ -1,55 +1,37 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {Provider, useDispatch, useSelector} from 'react-redux'; // Import from react-redux
+import store from './store'; // Correct path to your store
 import GradientBackground from './Components/GradientBackground';
 import TabNavigator from './navigation/TabNavigator';
-import {AchievementContext} from './context/AchievementContext';
+import {fetchAchievements} from './actions/achievementActions'; // Ensure correct import
+
+const categories = [
+  'all',
+  'glorious_moments',
+  'matches',
+  'honor',
+  'progress',
+  'items',
+  'social',
+  'general',
+]; // Update categories as needed
 
 const App = () => {
-  const [achievements, setAchievements] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState('');
-  const [limit, setLimit] = useState(10);
-  const [hasMore, setHasMore] = useState(true);
-
-  const handleQuery = query => {
-    setQuery(query);
-  };
+  const dispatch = useDispatch();
+  const achievementsData = useSelector(state => state.achievements.data);
+  const loading = useSelector(state => state.achievements.loading);
 
   useEffect(() => {
-    console.log('Fetching achievements before mounting...');
-    const fetchAchievements = async () => {
-      try {
-        const response = await fetch(
-          `https://pubg-guides.onrender.com/api/achievements/all?name=${query}&limit=${limit}&`,
-        );
-        const data = await response.json();
-        setAchievements(data.achievements);
-        // setHasMore(data.length < data.count ? true : false);
-      } catch (error) {
-        console.error('Error fetching achievements:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAchievements();
-  }, [query, limit]);
-
-  const handleEndReached = () => {
-    if (!loading) {
-      setLimit(prevLimit => prevLimit + 10);
-    }
-  };
+    categories.forEach(category => {
+      dispatch(fetchAchievements(category, 10)); // Fetch with limit 10 for each category
+    });
+  }, [dispatch]);
 
   return (
-    <AchievementContext.Provider
-      value={{
-        achievements,
-        loading,
-        handleQuery,
-        handleEndReached,
-      }}>
+    <Provider store={store}>
       <SafeAreaProvider>
         <GradientBackground>
           <NavigationContainer>
@@ -57,15 +39,13 @@ const App = () => {
               <GradientBackground />
             </View>
             <TabNavigator
-              achievements={achievements}
+              achievementsData={achievementsData}
               loading={loading}
-              handleQuery={handleQuery}
-              handleEndReached={handleEndReached}
             />
           </NavigationContainer>
         </GradientBackground>
       </SafeAreaProvider>
-    </AchievementContext.Provider>
+    </Provider>
   );
 };
 

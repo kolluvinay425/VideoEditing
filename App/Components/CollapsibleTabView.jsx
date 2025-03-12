@@ -16,14 +16,21 @@ import {useNavigation} from '@react-navigation/native';
 import TabScene from './TabScene';
 import LanguageSwitcher from './LanguageSwitcher';
 import {useAchievement} from '../context/AchievementContext';
+import {useDispatch, useSelector} from 'react-redux';
 
+import {fetchAchievements} from '../store/actions/achievementActions';
 const TabBarHeight = 50;
 const HeaderHeight = 300;
+
+const PAGE_INCREMENT = 10;
 
 const TabBarCollapsible = () => {
   const {achievements, handleEndReached, loading, handleQuery} =
     useAchievement();
+  const dispatch = useDispatch();
 
+  const achievementsData = useSelector(state => state.achievements.data);
+  const limits = useSelector(state => state.achievements.limits);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'all', title: 'All'},
@@ -35,12 +42,30 @@ const TabBarCollapsible = () => {
     {key: 'social', title: 'Social'},
     {key: 'general', title: 'General'},
   ]);
+
+  const loadAchievements = useCallback(
+    (category, limit) => {
+      dispatch(fetchAchievements(category, limit));
+    },
+    [dispatch],
+  );
+
   const scrollY = useRef(new Animated.Value(0)).current;
   let listRefArr = useRef([]);
   let listOffset = useRef({});
   let isListGliding = useRef(false);
   const navigation = useNavigation();
   const [loadingLanguage, setLoadingLanguage] = useState(false);
+
+  // useEffect(() => {
+  //   const category = routes[index];
+  //   if (
+  //     !achievementsData[category] ||
+  //     achievementsData[category].length === 0
+  //   ) {
+  //     loadAchievements(category, limits[category]);
+  //   }
+  // }, [index]);
 
   const [language, setLanguage] = useState('en'); // Default language is English
 
@@ -226,48 +251,19 @@ const TabBarCollapsible = () => {
   const renderScene = ({route}) => {
     const numCols = 3;
 
-    const filteredAchievements =
-      route.key === 'all'
-        ? achievements || []
-        : (achievements || []).filter(ach => ach.category === route.key);
+    const category = route.key;
+    const data = achievementsData[category] || [];
+    const currentLimit = limits[category];
 
-    console.log('---------------------------->', filteredAchievements);
-    // let filteredAchievements;
-    // switch (route.key) {
-    //   case 'all':
-    //     filteredAchievements = achievements;
-    //     break;
-    //   case 'glorious_moments':
-    //     filteredAchievements = achievements;
-
-    //   case 'matches':
-    //     filteredAchievements = achievements;
-
-    //     break;
-    //   case 'honor':
-    //     filteredAchievements = achievements;
-
-    //   case 'progress':
-    //     filteredAchievements = achievements;
-
-    //     break;
-    //   case 'items':
-    //     filteredAchievements = achievements;
-
-    //   case 'social':
-    //     filteredAchievements = achievements;
-
-    //     break;
-    //   case 'general':
-    //     filteredAchievements = achievements;
-
-    //   default:
-    //     return null;
-    // }
+    console.log('---------------------------->', data);
+    const handleLoadMore = () => {
+      const newLimit = currentLimit + PAGE_INCREMENT;
+      loadAchievements(category, newLimit);
+    };
     return (
       <TabScene
         numCols={numCols}
-        data={filteredAchievements}
+        data={data}
         renderItem={renderItem}
         scrollY={scrollY}
         onMomentumScrollBegin={onMomentumScrollBegin}
@@ -281,7 +277,7 @@ const TabBarCollapsible = () => {
             }
           }
         }}
-        handleEndReached={handleEndReached}
+        handleEndReached={handleLoadMore}
       />
     );
   };

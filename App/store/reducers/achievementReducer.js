@@ -1,47 +1,52 @@
-// store/reducers/achievementReducer.js
-import {createSlice} from '@reduxjs/toolkit';
-import {fetchAllAchievements} from '../actions/achievementActions';
+import {FETCH_ACHIEVEMENTS, SET_LIMIT} from '../actions/achievementActions';
 
 const initialState = {
-  achievements: {},
+  data: {
+    all: [],
+    glorious_moments: [],
+    matches: [],
+    honor: [],
+    progress: [],
+    items: [],
+    social: [],
+    general: [],
+  },
   loading: false,
-  error: null,
-  query: {}, // query is now an object with tab names as keys
-  limit: 10,
-  hasMore: true,
+  limits: {
+    all: 10,
+    glorious_moments: 10,
+    matches: 10,
+    honor: 10,
+    progress: 10,
+    items: 10,
+    social: 10,
+    general: 10,
+  },
 };
 
-const achievementSlice = createSlice({
-  name: 'achievements',
-  initialState,
-  reducers: {
-    setQuery(state, action) {
-      const {category, query} = action.payload;
-      state.query[category] = query; // store query per category
-      state.limit = 10; // reset limit when changing query
-    },
-    incrementLimit(state) {
-      state.limit += 10;
-    },
-  },
-  extraReducers: builder => {
-    builder
-      .addCase(fetchAllAchievements.pending, state => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchAllAchievements.fulfilled, (state, action) => {
-        state.achievements = action.payload;
-        const allCount = action.payload?.all?.length || 0;
-        state.hasMore = allCount >= state.limit;
-        state.loading = false;
-      })
-      .addCase(fetchAllAchievements.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || 'Something went wrong';
-      });
-  },
-});
+const achievementsReducer = (state = initialState, action) => {
+  const {type, payload} = action;
 
-export const {setQuery, incrementLimit} = achievementSlice.actions;
-export default achievementSlice.reducer;
+  switch (type) {
+    case FETCH_ACHIEVEMENTS:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          [payload.category]: payload.data,
+        },
+      };
+    case SET_LIMIT:
+      return {
+        ...state,
+        limits: {
+          ...state.limits,
+          [payload.category]: payload.limit,
+        },
+      };
+    default:
+      return state;
+  }
+};
+
+export default achievementsReducer;

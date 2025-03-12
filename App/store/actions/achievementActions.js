@@ -1,28 +1,25 @@
-// store/actions/achievementActions.js
-import {createAsyncThunk} from '@reduxjs/toolkit';
-import {fetchAchievementsByCategory} from '../../api/achievementApi';
+export const FETCH_ACHIEVEMENTS = 'FETCH_ACHIEVEMENTS';
+export const SET_LIMIT = 'SET_LIMIT';
 
-const CATEGORIES = [
-  'all',
-  'glorious_moments',
-  'matches',
-  'honor',
-  'progress',
-  'items',
-  'social',
-  'general',
-];
+export const fetchAchievements =
+  (category, limit = 10) =>
+  async dispatch => {
+    try {
+      const response = await fetch(
+        ` https://pubg-guides.onrender.com/api/achievements/all?category=${category}&page=1&limit=${limit}`,
+      );
+      const data = await response.json();
 
-export const fetchAllAchievements = createAsyncThunk(
-  'achievements/fetchAll',
-  async ({query, limit}) => {
-    const allData = {};
+      dispatch({
+        type: FETCH_ACHIEVEMENTS,
+        payload: {category, data},
+      });
 
-    for (const category of CATEGORIES) {
-      const data = await fetchAchievementsByCategory(query, limit, category);
-      allData[category] = data;
+      dispatch({
+        type: SET_LIMIT,
+        payload: {category, limit},
+      });
+    } catch (error) {
+      console.error('Error fetching achievements:', error);
     }
-
-    return allData;
-  },
-);
+  };
