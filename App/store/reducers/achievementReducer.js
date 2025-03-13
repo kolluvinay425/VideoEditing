@@ -1,7 +1,7 @@
 import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
-  data: {
+  achievements: {
     all: [],
     glorious_moments: [],
     matches: [],

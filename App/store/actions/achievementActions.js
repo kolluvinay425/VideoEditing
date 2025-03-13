@@ -6,10 +6,10 @@ export const fetchAchievements =
   async dispatch => {
     try {
       const response = await fetch(
-        ` https://pubg-guides.onrender.com/api/achievements/all?category=${category}&page=1&limit=${limit}`,
+        `https://pubg-guides.onrender.com/api/achievements/all?category=${category}&limit=${limit}`,
       );
       const data = await response.json();
-
+      // console.log('data--------------->', data);
       dispatch({
         type: FETCH_ACHIEVEMENTS,
         payload: {category, data},
