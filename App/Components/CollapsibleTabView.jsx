@@ -182,7 +182,10 @@ const TabBarCollapsible = () => {
         <TouchableOpacity
           onPress={() =>
             !isListGliding.current &&
-            navigation.navigate('ItemDetails', {item, language})
+            navigation.navigate('ItemDetails', {
+              item: getItem(item.id),
+              language,
+            })
           }
           style={styles.itemContainer}>
           <FastImage
@@ -220,6 +223,11 @@ const TabBarCollapsible = () => {
         />
       );
     }
+  };
+
+  const getItem = id => {
+    const item = achievements.find(item => item.id === id);
+    return item;
   };
 
   const renderLabel = ({route, focused}) => (
