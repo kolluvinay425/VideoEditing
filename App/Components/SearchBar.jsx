@@ -60,8 +60,8 @@ const SearchBar = ({handleQuery, scrollY, headerHeight}) => {
           ]}>
           <MaterialIcons
             name="search"
-            size={20}
-            color="#888"
+            size={30}
+            color="#000000"
             style={styles.searchIcon}
           />
           <TextInput
@@ -73,8 +73,8 @@ const SearchBar = ({handleQuery, scrollY, headerHeight}) => {
           />
           <MaterialIcons
             name="filter-list"
-            size={20}
-            color="#888"
+            size={30}
+            color="#000000"
             style={styles.filterIcon}
           />
         </Animated.View>
@@ -111,9 +111,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: width * 0.7,
-    height: height * 0.05,
-    backgroundColor: 'rgba(243, 238, 238, 0.8)',
+    width: width * 0.9,
+    height: height * 0.053,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     borderRadius: 25,
     paddingHorizontal: 10,
     elevation: 5,
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     marginTop: 10, // Adds spacing below the achievements text
   },
   achievementsContainer: {
-    alignItems: 'center', // Centers text horizontally
+    alignItems: 'flex-start', // Centers text horizontally
     width: width * 0.7,
     marginBottom: 0, // Removes bottom margin
   },

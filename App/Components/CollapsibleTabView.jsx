@@ -21,8 +21,13 @@ const TabBarHeight = 50;
 const HeaderHeight = 300;
 
 const TabBarCollapsible = () => {
-  const {achievements, handleEndReached, loading, handleQuery} =
-    useAchievement();
+  const {
+    achievements,
+    achievementsLimited,
+    handleEndReached,
+    loading,
+    handleQuery,
+  } = useAchievement();
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -148,7 +153,7 @@ const TabBarCollapsible = () => {
             style={styles.tab}
             renderLabel={renderLabel}
             indicatorStyle={styles.indicator}
-            activeColor="#ffffff"
+            activeColor="#e91e63"
             inactiveColor="#f0e9e9"
             scrollEnabled
           />
@@ -228,8 +233,8 @@ const TabBarCollapsible = () => {
 
     const filteredAchievements =
       route.key === 'all'
-        ? achievements || []
-        : (achievements || []).filter(ach => ach.category === route.key);
+        ? achievementsLimited || []
+        : (achievementsLimited || []).filter(ach => ach.category === route.key);
 
     console.log('---------------------------->', filteredAchievements);
     // let filteredAchievements;

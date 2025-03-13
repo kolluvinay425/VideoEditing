@@ -8,36 +8,60 @@ import {AchievementContext} from './context/AchievementContext';
 
 const App = () => {
   const [achievements, setAchievements] = useState([]);
+  const [achievementsLimited, setAchievementsLimited] = useState([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [limit, setLimit] = useState(10);
   const [hasMore, setHasMore] = useState(true);
 
-  const handleQuery = query => {
-    setQuery(query);
+  const handleQuery = newQuery => {
+    setQuery(newQuery);
+  };
+
+  const fetchLimitedFieldsAchievements = async () => {
+    try {
+      const response = await fetch(
+        `https://pubg-guides.onrender.com/api/achievements/all/limited?limit=${400}`,
+      );
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching limited achievements:', error);
+      return null;
+    }
   };
 
   useEffect(() => {
-    console.log('Fetching achievements before mounting...');
+    console.log('Fetching achievements...');
     const fetchAchievements = async () => {
       try {
         const response = await fetch(
-          `https://pubg-guides.onrender.com/api/achievements/all?name=${query}&limit=${limit}&`,
+          `https://pubg-guides.onrender.com/api/achievements/all?name=${query}&limit=${limit}`,
         );
         const data = await response.json();
-        setAchievements(data.achievements);
-        // setHasMore(data.length < data.count ? true : false);
+
+        setAchievements(data.achievements || []);
+        setHasMore(data.achievements?.length < data.count); // Ensure `data.count` exists
+
+        const limitedAFields = await fetchLimitedFieldsAchievements();
+        if (limitedAFields?.achievements) {
+          setAchievementsLimited(limitedAFields.achievements);
+          setHasMore(
+            limitedAFields.achievements?.length < limitedAFields.count,
+          ); // Ensure `data.count` exists
+        }
       } catch (error) {
         console.error('Error fetching achievements:', error);
       } finally {
         setLoading(false);
       }
     };
+
     fetchAchievements();
   }, [query, limit]);
 
   const handleEndReached = () => {
-    if (!loading) {
+    if (!loading && hasMore) {
       setLimit(prevLimit => prevLimit + 10);
     }
   };
@@ -46,6 +70,7 @@ const App = () => {
     <AchievementContext.Provider
       value={{
         achievements,
+        achievementsLimited,
         loading,
         handleQuery,
         handleEndReached,
@@ -53,15 +78,7 @@ const App = () => {
       <SafeAreaProvider>
         <GradientBackground>
           <NavigationContainer>
-            <View style={{position: 'absolute', bottom: 0, width: '100%'}}>
-              <GradientBackground />
-            </View>
-            <TabNavigator
-              achievements={achievements}
-              loading={loading}
-              handleQuery={handleQuery}
-              handleEndReached={handleEndReached}
-            />
+            <TabNavigator />
           </NavigationContainer>
         </GradientBackground>
       </SafeAreaProvider>
