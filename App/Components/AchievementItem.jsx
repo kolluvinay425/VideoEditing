@@ -15,12 +15,6 @@ const AchievementItem = ({
       console.log('scroll ended kjggk------------->', isListGliding.current);
       navigation.navigate('ItemDetails', {item, language});
     }
-    // if (swiping) {
-    //   console.log('swipinggggg------->', swiping);
-    // }
-    // if (!swiping) {
-    //   console.log('swipinggggg------->', swiping);
-    // }
   };
 
   return (

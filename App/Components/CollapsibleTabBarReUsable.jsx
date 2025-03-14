@@ -47,6 +47,7 @@ const CollapsibleTabBar = ({
         indicatorStyle={styles.indicator}
         activeColor="#e91e63"
         inactiveColor="#f0e9e9"
+        scrollEnabled
       />
     </Animated.View>
   );

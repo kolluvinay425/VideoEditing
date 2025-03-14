@@ -2,25 +2,21 @@ import React, {useState, useEffect, useRef, useCallback, memo} from 'react';
 import {
   StyleSheet,
   View,
-  Text,
   Dimensions,
-  TouchableOpacity,
   ActivityIndicator,
   Animated,
 } from 'react-native';
 import {TabView, TabBar} from 'react-native-tab-view';
 import SearchBar from './SearchBar';
-import FastImage from 'react-native-fast-image';
-import {useNavigation} from '@react-navigation/native';
-import TabScene from './TabScene';
 import LanguageSwitcher from './LanguageSwitcher';
 import {useAchievement} from '../context/AchievementContext';
-import {useCollapsibleTabScroll} from './useCollapsibleTabScroll';
-import CollapsibleTabBar from './CollapsibleTabBar';
+import {useCollapsibleTabScroll} from '../hooks/useCollapsibleTabScroll';
+import CollapsibleTabBar from './CollapsibleTabBarReUsable';
+import AchievementItem from '../Screens/Achievement/AchievementItem';
 
 const TabBarHeight = 50;
 const HeaderHeight = 300;
-
+const screenHeight = Dimensions.get('window').height;
 const TabBarCollapsible = () => {
   const {
     achievements,
@@ -50,7 +46,6 @@ const TabBarCollapsible = () => {
     (headerHeight = HeaderHeight),
   );
 
-  const navigation = useNavigation();
   const [loadingLanguage, setLoadingLanguage] = useState(false);
 
   const [language, setLanguage] = useState('en'); // Default language is English
@@ -95,35 +90,12 @@ const TabBarCollapsible = () => {
   const renderItem = ({item}) => {
     return (
       <>
-        <TouchableOpacity
-          onPress={() =>
-            !isListGliding.current &&
-            navigation.navigate('ItemDetails', {
-              item: getItem(item.id),
-              language,
-            })
-          }
-          style={styles.itemContainer}>
-          <FastImage
-            source={{
-              uri: 'https://res.cloudinary.com/vny/image/upload/v1739896428/AchievementSkeliton_l2dkqc.png',
-            }}
-            style={{width: 60, height: 50}}
-          />
-
-          <Text style={styles.itemText} numberOfLines={1} ellipsizeMode="tail">
-            {item.name[language]}
-          </Text>
-          <View style={styles.inlineContainer}>
-            <FastImage
-              source={{
-                uri: 'https://res.cloudinary.com/vny/image/upload/v1739961906/points_vhi3dv.png',
-              }}
-              style={styles.inlineImage}
-            />
-            <Text style={styles.itemText}>{item.points}</Text>
-          </View>
-        </TouchableOpacity>
+        <AchievementItem
+          item={item}
+          isListGliding={isListGliding}
+          getItem={getItem}
+          language={language}
+        />
       </>
     );
   };
@@ -157,15 +129,10 @@ const TabBarCollapsible = () => {
     console.log('---------------------------->', filteredAchievements);
 
     return (
-      <TabScene
-        numCols={numCols}
-        data={filteredAchievements}
-        renderItem={renderItem}
-        scrollY={scrollY}
-        onMomentumScrollBegin={onMomentumScrollBegin}
-        onScrollEndDrag={onScrollEndDrag}
-        onMomentumScrollEnd={onMomentumScrollEnd}
-        onGetRef={ref => {
+      <Animated.FlatList
+        scrollToOverflowEnabled={true}
+        numColumns={numCols}
+        ref={ref => {
           if (ref) {
             const found = listRefArr.current.find(e => e.key === route.key);
             if (!found) {
@@ -173,7 +140,29 @@ const TabBarCollapsible = () => {
             }
           }
         }}
-        handleEndReached={handleEndReached}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{nativeEvent: {contentOffset: {y: scrollY}}}],
+          {
+            useNativeDriver: true,
+          },
+        )}
+        onMomentumScrollBegin={onMomentumScrollBegin}
+        onScrollEndDrag={onScrollEndDrag}
+        onMomentumScrollEnd={onMomentumScrollEnd}
+        ItemSeparatorComponent={() => <View style={{height: 10}} />}
+        ListHeaderComponent={() => <View style={{height: 10}} />}
+        contentContainerStyle={{
+          minHeight: screenHeight * 1.5, // Ensures a minimum scrollable height
+          paddingTop: HeaderHeight + TabBarHeight,
+        }}
+        showsHorizontalScrollIndicator={false}
+        data={filteredAchievements}
+        renderItem={renderItem}
+        showsVerticalScrollIndicator={true}
+        onEndReached={handleEndReached}
+        // keyExtractor={(item, index) => index.toString()}
+        keyExtractor={item => item.id.toString()} // or any unique identifier
       />
     );
   };
@@ -189,7 +178,6 @@ const TabBarCollapsible = () => {
       }}
       navigationState={{index, routes}}
       renderScene={renderScene}
-      // renderTabBar={renderTabBar}
       renderTabBar={props => (
         <CollapsibleTabBar
           {...props}
@@ -210,50 +198,5 @@ const TabBarCollapsible = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  header: {
-    top: 0,
-    height: HeaderHeight,
-    width: '100%',
-    position: 'absolute',
-  },
-  itemContainer: {
-    flex: 0.7,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 0.3,
-    borderColor: '#b09d21',
-    padding: 10,
-    margin: 10,
-    aspectRatio: 1,
-    backgroundColor: '#302d2d',
-    overflow: 'hidden',
-    borderRadius: 5,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 5,
-  },
-  itemText: {
-    padding: 5,
-    fontSize: 10,
-    color: '#d5cece',
-    fontWeight: 'bold',
-    numberOfLines: 1, // Ensures only one line
-    ellipsizeMode: 'tail', // Adds "..." if text overflows
-  },
-  inlineContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  inlineImage: {
-    width: 10,
-    height: 10,
-    resizeMode: 'contain',
-    marginLeft: 5,
-  },
-});
 
 export default TabBarCollapsible;

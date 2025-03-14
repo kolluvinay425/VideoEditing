@@ -6,8 +6,8 @@ import LanguageSwitcher from './LanguageSwitcher';
 import Item from '../Screens/Achievement/Detail/Item';
 import RequirementScreen from '../Screens/Achievement/Detail/RequirementScreen';
 import TipsScreen from '../Screens/Achievement/Detail/TipsAndTricks';
-import {useCollapsibleTabScroll} from './useCollapsibleTabScroll';
-import CollapsibleTabBar from './CollapsibleTabBar';
+import {useCollapsibleTabScroll} from '../hooks/useCollapsibleTabScroll';
+import CollapsibleTabBar from './CollapsibleTabBarReUsable';
 const TabBarHeight = 50;
 const HeaderHeight = 150;
 
