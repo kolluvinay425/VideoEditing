@@ -162,20 +162,6 @@ const TabBarCollapsible = () => {
     );
   };
 
-  // const renderItem = useCallback(
-  //   ({item}) => (
-  //     <MemoizedAchievementItem
-  //       item={item}
-  //       navigation={navigation}
-  //       isListGliding={isListGliding}
-  //       swiping={swiping}
-  //       language={language}
-  //       HeaderHeight={HeaderHeight}
-  //     />
-  //   ),
-  //   [navigation, swiping, language],
-  // );
-
   const renderItem = ({item}) => {
     return (
       <>
@@ -245,38 +231,7 @@ const TabBarCollapsible = () => {
         : (achievementsLimited || []).filter(ach => ach.category === route.key);
 
     console.log('---------------------------->', filteredAchievements);
-    // let filteredAchievements;
-    // switch (route.key) {
-    //   case 'all':
-    //     filteredAchievements = achievements;
-    //     break;
-    //   case 'glorious_moments':
-    //     filteredAchievements = achievements;
 
-    //   case 'matches':
-    //     filteredAchievements = achievements;
-
-    //     break;
-    //   case 'honor':
-    //     filteredAchievements = achievements;
-
-    //   case 'progress':
-    //     filteredAchievements = achievements;
-
-    //     break;
-    //   case 'items':
-    //     filteredAchievements = achievements;
-
-    //   case 'social':
-    //     filteredAchievements = achievements;
-
-    //     break;
-    //   case 'general':
-    //     filteredAchievements = achievements;
-
-    //   default:
-    //     return null;
-    // }
     return (
       <TabScene
         numCols={numCols}
