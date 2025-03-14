@@ -19,6 +19,7 @@ const TabBarCollapsibleDetail = ({loading, routes, data, handleQuery}) => {
     routes,
     tabIndex,
     scrollY,
+    (headerHeight = HeaderHeight),
   );
 
   const onMomentumScrollBegin = () => {
@@ -95,6 +96,7 @@ const TabBarCollapsibleDetail = ({loading, routes, data, handleQuery}) => {
           {...props}
           scrollY={scrollY}
           isListGliding={isListGliding}
+          headerHeight={HeaderHeight}
         />
       )}
       initialLayout={{height: 0, width: Dimensions.get('window').width}}

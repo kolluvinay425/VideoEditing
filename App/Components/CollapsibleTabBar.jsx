@@ -3,12 +3,18 @@ import React from 'react';
 import {Animated, Text, StyleSheet} from 'react-native';
 import {TabBar} from 'react-native-tab-view';
 
-const HeaderHeight = 150;
+const CollapsibleTabBar = ({
+  scrollY,
+  isListGliding,
+  headerHeight,
+  ...props
+}) => {
+  const HeaderHeight = headerHeight;
 
-const CollapsibleTabBar = ({scrollY, isListGliding, ...props}) => {
+  const value = HeaderHeight === 300 ? 150 : 0;
   const y = scrollY.interpolate({
     inputRange: [0, 1, HeaderHeight],
-    outputRange: [0, 0, -HeaderHeight],
+    outputRange: [0, 0, -HeaderHeight + value],
     extrapolateRight: 'clamp',
   });
 
@@ -39,7 +45,7 @@ const CollapsibleTabBar = ({scrollY, isListGliding, ...props}) => {
         style={styles.tab}
         renderLabel={renderLabel}
         indicatorStyle={styles.indicator}
-        activeColor="#ffffff"
+        activeColor="#e91e63"
         inactiveColor="#f0e9e9"
       />
     </Animated.View>

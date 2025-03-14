@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Animated,
-  ScrollView,
 } from 'react-native';
 import {TabView, TabBar} from 'react-native-tab-view';
 import SearchBar from './SearchBar';
@@ -16,6 +15,8 @@ import {useNavigation} from '@react-navigation/native';
 import TabScene from './TabScene';
 import LanguageSwitcher from './LanguageSwitcher';
 import {useAchievement} from '../context/AchievementContext';
+import {useCollapsibleTabScroll} from './useCollapsibleTabScroll';
+import CollapsibleTabBar from './CollapsibleTabBar';
 
 const TabBarHeight = 50;
 const HeaderHeight = 300;
@@ -41,9 +42,14 @@ const TabBarCollapsible = () => {
     {key: 'general', title: 'General'},
   ]);
   const scrollY = useRef(new Animated.Value(0)).current;
-  let listRefArr = useRef([]);
-  let listOffset = useRef({});
-  let isListGliding = useRef(false);
+
+  const {listRefArr, isListGliding, syncScrollOffset} = useCollapsibleTabScroll(
+    routes,
+    (tabIndex = index),
+    scrollY,
+    (headerHeight = HeaderHeight),
+  );
+
   const navigation = useNavigation();
   const [loadingLanguage, setLoadingLanguage] = useState(false);
 
@@ -56,45 +62,7 @@ const TabBarCollapsible = () => {
   //       setLoadingLanguage(false); // End loading effect after 1 second (or adjust time as needed)
   //     }, 1000);
   //   };
-  useEffect(() => {
-    scrollY.addListener(({value}) => {
-      const curRoute = routes[index].key;
-      listOffset.current[curRoute] = value;
-    });
-    return () => {
-      scrollY.removeAllListeners();
-    };
-  }, [routes, index]);
 
-  const syncScrollOffset = () => {
-    const curRouteKey = routes[index].key;
-    listRefArr.current.forEach(item => {
-      if (item.key !== curRouteKey) {
-        if (scrollY._value < HeaderHeight && scrollY._value >= 0) {
-          if (item.value) {
-            item.value.scrollToOffset({
-              offset: scrollY._value,
-              animated: false,
-            });
-            listOffset.current[item.key] = scrollY._value;
-          }
-        } else if (scrollY._value >= HeaderHeight) {
-          if (
-            listOffset.current[item.key] < HeaderHeight ||
-            listOffset.current[item.key] == null
-          ) {
-            if (item.value) {
-              item.value.scrollToOffset({
-                offset: HeaderHeight,
-                animated: false,
-              });
-              listOffset.current[item.key] = HeaderHeight;
-            }
-          }
-        }
-      }
-    });
-  };
   const [swiping, setSwiping] = useState(false);
 
   const onMomentumScrollBegin = () => {
@@ -123,44 +91,6 @@ const TabBarCollapsible = () => {
       {/* <LanguageSwitcher language={language} setLanguage={setLanguage} /> */}
     </>
   );
-
-  const renderTabBar = props => {
-    const y = scrollY.interpolate({
-      inputRange: [0, 1, HeaderHeight],
-      outputRange: [0, 0, -HeaderHeight + 150],
-      extrapolateRight: 'clamp',
-    });
-
-    return (
-      <>
-        <Animated.View
-          style={{
-            zIndex: 1,
-            position: 'absolute',
-            top: HeaderHeight,
-            transform: [{translateY: y}],
-            width: '100%',
-          }}>
-          <TabBar
-            {...props}
-            onTabPress={({route, preventDefault}) => {
-              if (isListGliding.current) {
-                preventDefault();
-              }
-            }}
-            labelStyle={styles.label}
-            tabStyle={styles.tabStyle}
-            style={styles.tab}
-            renderLabel={renderLabel}
-            indicatorStyle={styles.indicator}
-            activeColor="#e91e63"
-            inactiveColor="#f0e9e9"
-            scrollEnabled
-          />
-        </Animated.View>
-      </>
-    );
-  };
 
   const renderItem = ({item}) => {
     return (
@@ -216,12 +146,6 @@ const TabBarCollapsible = () => {
     return item;
   };
 
-  const renderLabel = ({route, focused}) => (
-    <Text style={[styles.label, {opacity: focused ? 1 : 2}]}>
-      {route.title}
-    </Text>
-  );
-
   const renderScene = ({route}) => {
     const numCols = 3;
 
@@ -265,7 +189,15 @@ const TabBarCollapsible = () => {
       }}
       navigationState={{index, routes}}
       renderScene={renderScene}
-      renderTabBar={renderTabBar}
+      // renderTabBar={renderTabBar}
+      renderTabBar={props => (
+        <CollapsibleTabBar
+          {...props}
+          scrollY={scrollY}
+          isListGliding={isListGliding}
+          headerHeight={HeaderHeight}
+        />
+      )}
       initialLayout={{height: 0, width: Dimensions.get('window').width}}
     />
   );
@@ -285,18 +217,6 @@ const styles = StyleSheet.create({
     height: HeaderHeight,
     width: '100%',
     position: 'absolute',
-  },
-  label: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  tab: {elevation: 0, shadowOpacity: 0, backgroundColor: '#2a2a2a'},
-  indicator: {
-    backgroundColor: '#e91e63',
-  },
-  tabStyle: {
-    width: 'auto',
-    paddingHorizontal: 10,
   },
   itemContainer: {
     flex: 0.7,
