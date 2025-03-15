@@ -1497,10 +1497,10 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
   BVLinearGradient: cb006ba232a1f3e4f341bb62c42d1098c284da70
-  DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
+  DoubleConversion: 76ab83afb40bddeeee456813d9c04f67f78771b5
   FBLazyVector: 026c8f4ae67b06e088ae01baa2271ef8a26c0e8c
   fmt: 4c2741a687cc09f0634a2e2c72a838b99f1ff120
-  glog: eb93e2f488219332457c3c4eafd2738ddc7e80b8
+  glog: c5d68082e772fa1c511173d6b30a9de2c05a69a2
   hermes-engine: 6eae7edb2f563ee41d7c1f91f4f2e57c26d8a5c3
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
   RCT-Folly: 5f972de9f7d384c7d0e7380dd7da506228e568f5
