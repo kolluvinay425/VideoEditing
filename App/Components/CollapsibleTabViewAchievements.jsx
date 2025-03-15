@@ -1,11 +1,5 @@
-import React, {useState, useEffect, useRef, useCallback, memo} from 'react';
-import {
-  StyleSheet,
-  View,
-  Dimensions,
-  ActivityIndicator,
-  Animated,
-} from 'react-native';
+import React, {useState, useRef, useCallback, memo, useMemo} from 'react';
+import {View, Dimensions, ActivityIndicator, Animated} from 'react-native';
 import {TabView, TabBar} from 'react-native-tab-view';
 import SearchBar from './SearchBar';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -58,8 +52,6 @@ const TabBarCollapsible = () => {
   //     }, 1000);
   //   };
 
-  const [swiping, setSwiping] = useState(false);
-
   const onMomentumScrollBegin = () => {
     isListGliding.current = true;
     console.log('scroll started------------->', isListGliding.current);
@@ -79,7 +71,7 @@ const TabBarCollapsible = () => {
   const renderHeader = () => (
     <>
       <SearchBar
-        handleQuery={handleQuery}
+        // handleQuery={handleQuery}
         scrollY={scrollY}
         headerHeight={HeaderHeight}
       />
@@ -87,18 +79,19 @@ const TabBarCollapsible = () => {
     </>
   );
 
-  const renderItem = ({item}) => {
-    return (
-      <>
-        <AchievementItem
-          item={item}
-          isListGliding={isListGliding}
-          getItem={getItem}
-          language={language}
-        />
-      </>
-    );
-  };
+  const MemoizedAchievementItem = memo(AchievementItem);
+
+  const renderItem = useCallback(
+    ({item}) => (
+      <MemoizedAchievementItem
+        item={item}
+        isListGliding={isListGliding}
+        getItem={getItem}
+        language={language}
+      />
+    ),
+    [isListGliding, getItem, language],
+  );
 
   const isLoading = () => {
     if (loading) {
@@ -112,34 +105,72 @@ const TabBarCollapsible = () => {
       );
     }
   };
-
+  const setListRef = useCallback((key, ref) => {
+    if (ref && !listRefArr.current.find(e => e.key === key)) {
+      listRefArr.current.push({key, value: ref});
+    }
+  }, []);
   const getItem = id => {
     const item = achievements.find(item => item.id === id);
     return item;
   };
 
+  const achievementMap = useMemo(() => {
+    const map = {
+      all: achievementsLimited || [],
+    };
+
+    (achievementsLimited || []).forEach(ach => {
+      const key = ach.category;
+      if (!map[key]) map[key] = [];
+      map[key].push(ach);
+    });
+
+    return map;
+  }, [achievementsLimited]);
+
+  const renderSearchResults = () => {
+    return (
+      <Animated.FlatList
+        data={searchResults}
+        keyExtractor={item => item.id.toString()}
+        numColumns={3}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{nativeEvent: {contentOffset: {y: scrollY}}}],
+          {useNativeDriver: true},
+        )}
+        contentContainerStyle={{
+          paddingTop: HeaderHeight,
+          minHeight: screenHeight * 1.3,
+        }}
+        renderItem={renderItem}
+        ItemSeparatorComponent={() => <View style={{height: 10}} />}
+        ListHeaderComponent={() => <View style={{height: 10}} />}
+        onEndReached={handleEndReached}
+        onMomentumScrollBegin={onMomentumScrollBegin}
+        onScrollEndDrag={onScrollEndDrag}
+        onMomentumScrollEnd={onMomentumScrollEnd}
+      />
+    );
+  };
+
   const renderScene = ({route}) => {
     const numCols = 3;
 
-    const filteredAchievements =
-      route.key === 'all'
-        ? achievementsLimited || []
-        : (achievementsLimited || []).filter(ach => ach.category === route.key);
+    const filteredAchievements = achievementMap[route.key] || [];
+    // const filteredAchievements =
+    //   route.key === 'all'
+    //     ? achievementsLimited || []
+    //     : (achievementsLimited || []).filter(ach => ach.category === route.key);
 
-    console.log('---------------------------->', filteredAchievements);
+    // console.log('---------------------------->', filteredAchievements);
 
     return (
       <Animated.FlatList
         scrollToOverflowEnabled={true}
         numColumns={numCols}
-        ref={ref => {
-          if (ref) {
-            const found = listRefArr.current.find(e => e.key === route.key);
-            if (!found) {
-              listRefArr.current.push({key: route.key, value: ref});
-            }
-          }
-        }}
+        ref={ref => setListRef(route.key, ref)}
         scrollEventThrottle={16}
         onScroll={Animated.event(
           [{nativeEvent: {contentOffset: {y: scrollY}}}],
@@ -153,7 +184,7 @@ const TabBarCollapsible = () => {
         ItemSeparatorComponent={() => <View style={{height: 10}} />}
         ListHeaderComponent={() => <View style={{height: 10}} />}
         contentContainerStyle={{
-          minHeight: screenHeight * 1.5, // Ensures a minimum scrollable height
+          minHeight: screenHeight * 1.3, // Ensures a minimum scrollable height
           paddingTop: HeaderHeight + TabBarHeight,
         }}
         showsHorizontalScrollIndicator={false}
@@ -174,8 +205,10 @@ const TabBarCollapsible = () => {
         onMomentumScrollBegin();
         setTimeout(() => {
           onMomentumScrollEnd();
-        }, 2000); // Adjust delay based on tab transition duration
+        }, 300); // Adjust delay based on tab transition duration
       }}
+      lazy
+      renderLazyPlaceholder={() => <ActivityIndicator color="#e91e63" />}
       navigationState={{index, routes}}
       renderScene={renderScene}
       renderTabBar={props => (

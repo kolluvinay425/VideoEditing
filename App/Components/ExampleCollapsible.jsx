@@ -285,6 +285,7 @@ const CollapsibleTabViewExample = () => {
           tabStyle={styles.tabStyle}
           activeColor="#ffffff"
           inactiveColor="#f0e9e9"
+          scrollEnabled
         />
       </Animated.View>
     );

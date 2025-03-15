@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import GradientBackground from '../../Components/GradientBackground';
 import TabBarCollapsible from '../../Components/CollapsibleTabViewAchievements';
+import CollapsibleTabViewExample from '../../Components/ExampleCollapsible';
 
 const Achievements = () => {
   const [routes] = useState([
@@ -18,6 +19,7 @@ const Achievements = () => {
     <>
       <GradientBackground>
         <TabBarCollapsible routes={routes} />
+        {/* <CollapsibleTabViewExample /> */}
       </GradientBackground>
     </>
   );

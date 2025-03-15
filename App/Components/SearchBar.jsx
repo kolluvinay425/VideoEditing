@@ -9,11 +9,13 @@ import {
   Animated,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {useAchievement} from '../context/AchievementContext';
 
 const {width, height} = Dimensions.get('window');
 
-const SearchBar = ({handleQuery, scrollY, headerHeight}) => {
+const SearchBar = ({scrollY, headerHeight}) => {
   const [inputValue, setInputValue] = useState('');
+  const {handleQuery} = useAchievement();
 
   const handleInputChange = text => {
     setInputValue(text);
