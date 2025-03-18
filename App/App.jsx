@@ -123,6 +123,7 @@ const App = () => {
       </SafeAreaProvider>
     </AchievementContext.Provider>
   );
+  ch;
 };
 
 const styles = StyleSheet.create({
