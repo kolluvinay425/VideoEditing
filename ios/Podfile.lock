@@ -995,6 +995,8 @@ PODS:
     - Yoga
   - react-native-safe-area-context (5.3.0):
     - React-Core
+  - react-native-splash-screen (3.3.0):
+    - React-Core
   - React-nativeconfig (0.74.0)
   - React-NativeModulesApple (0.74.0):
     - glog
@@ -1345,6 +1347,7 @@ DEPENDENCIES:
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -1456,6 +1459,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-pager-view"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-splash-screen:
+    :path: "../node_modules/react-native-splash-screen"
   React-nativeconfig:
     :path: "../node_modules/react-native/ReactCommon"
   React-NativeModulesApple:
@@ -1558,6 +1563,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: 3b85b3778e447cd1f06d353b8e967af50f272829
   react-native-pager-view: 176db81d66a35119ec1b512a59bc94a47f73a68f
   react-native-safe-area-context: fdb0a66feac038cb6eb1edafcf2ccee2b5cf0284
+  react-native-splash-screen: 95994222cc95c236bd3cdc59fe45ed5f27969594
   React-nativeconfig: 951ec32f632e81cbd7d40aebb3211313251c092e
   React-NativeModulesApple: c8963908368d05a75af1eef7451ff86efc9b6517
   React-perflogger: 271f1111779fef70f9502d1d38da5132e5585230
